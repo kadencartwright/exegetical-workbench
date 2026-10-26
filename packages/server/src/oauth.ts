@@ -25,13 +25,13 @@ export async function githubIdentity(env: OAuthEnv, code: string, verifier: stri
   return user;
 }
 export function authorizationServer(origin: string) {
-  return new OAuthAuthorizationServer<OAuthEnv>({ issuer: origin, resources: [`${origin}/mcp`], defaultResource: `${origin}/mcp`, clientIdMetadataDocumentEnabled: false, scopesSupported: ['mcp:read', 'offline_access'], accessTokenTTL: 900, refreshTokenTTL: 28800, clientRegistrationEndpoint: '/oauth/register' });
+  return new OAuthAuthorizationServer<OAuthEnv>({ issuer: origin, resources: [`${origin}/mcp`], defaultResource: `${origin}/mcp`, clientIdMetadataDocumentEnabled: false, scopesSupported: ['mcp:read', 'mcp:write', 'offline_access'], accessTokenTTL: 900, refreshTokenTTL: 28800, clientRegistrationEndpoint: '/oauth/register' });
 }
-export function mcpResource(env: OAuthEnv, handler: (r: Request, e: OAuthEnv, owner: string) => Promise<Response>) {
+export function mcpResource(env: OAuthEnv, handler: (r: Request, e: OAuthEnv, owner: string, scopes: string[]) => Promise<Response>) {
   const server = authorizationServer(env.APP_ORIGIN!);
   return new OAuthResourceServer<OAuthEnv, { id: number; login: string }>({ resourceMetadata: { resource: `${env.APP_ORIGIN}/mcp`, authorization_servers: [env.APP_ORIGIN!] }, requiredScopes: ['mcp:read'], validateToken: e => (resource, token) => server.validateToken(resource, token, e), handler: { async fetch(r, e, ctx) {
     if (!ctx.auth.scope.includes('mcp:read')) return insufficientScope(ctx.auth, ['mcp:read']);
-    try { return await handler(r, e, allowedIdentity(ctx.props, e)); } catch (err) { if (err instanceof ServiceError) return Response.json({ error: { code: err.code } }, { status: err.status }); throw err; }
+    try { return await handler(r, e, allowedIdentity(ctx.props, e), ctx.auth.scope); } catch (err) { if (err instanceof ServiceError) return Response.json({ error: { code: err.code } }, { status: err.status }); throw err; }
   } } });
 }
 export function requireOAuthConfig(request: Request, env: OAuthEnv) {
@@ -67,7 +67,7 @@ export async function handleOAuth(request: Request, env: OAuthEnv, ctx: Executio
       if (request.method === 'GET') {
         const auth = await oauth.parseAuthRequest(request); const info = await oauth.describeConsent(auth); const consent = await oauth.beginConsent(auth);
         consent.headers.set('Content-Type', 'text/html; charset=utf-8');
-        return new Response(`<!doctype html><title>Authorize workbench access</title><h1>Authorize ${htmlEscape(info.clientName)}</h1><p>This client will read corpus evidence and your private notes. Only kadencartwright can authorize.</p><p>Redirect: ${htmlEscape(auth.redirectUri)}</p><p>Resource: ${htmlEscape(String(auth.resource))}</p><p>Scopes: ${htmlEscape(auth.scope.join(' '))}</p><form method="post"><input type="hidden" name="handle" value="${htmlEscape(consent.handle)}"><button name="decision" value="allow">Allow read access</button><button name="decision" value="deny">Deny</button></form>`, { headers: consent.headers });
+        return new Response(`<!doctype html><title>Authorize workbench access</title><h1>Authorize ${htmlEscape(info.clientName)}</h1><p>This client can read corpus evidence and private notes. If mcp:write is requested below, it can also create agent-generated notes, links and disputations. Only kadencartwright can authorize.</p><p>Redirect: ${htmlEscape(auth.redirectUri)}</p><p>Resource: ${htmlEscape(String(auth.resource))}</p><p>Scopes: ${htmlEscape(auth.scope.join(' '))}</p><form method="post"><input type="hidden" name="handle" value="${htmlEscape(consent.handle)}"><button name="decision" value="allow">Allow listed access</button><button name="decision" value="deny">Deny</button></form>`, { headers: consent.headers });
       }
       if (request.method !== 'POST') return new Response('Method not allowed', { status: 405 });
       checkOrigin(request, env);

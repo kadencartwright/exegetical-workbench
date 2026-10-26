@@ -1,3 +1,5 @@
+> Historical M1 checkpoint. For the completed local M2–M4 extension and current source boundaries, see [M1–M4 local acceptance](milestones-local.md).
+
 # M1 acceptance evidence
 
 Verified locally on 2026-10-26. The initial sample foundation was insufficient; this records the subsequent full-data implementation and integration checks. Cloud provisioning/deployment is explicitly deferred by the user.

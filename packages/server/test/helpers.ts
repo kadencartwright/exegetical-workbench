@@ -2,7 +2,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
 export function database() {
   const sqlite = new DatabaseSync(':memory:');
-  for (const file of ['0001_notes.sql','0002_auth.sql','0003_corpus.sql','0004_referents.sql']) sqlite.exec(readFileSync(new URL('../../../migrations/'+file, import.meta.url), 'utf8'));
+  for (const file of ['0001_notes.sql','0002_auth.sql','0003_corpus.sql','0004_referents.sql','0005_research.sql','0006_packs.sql','0007_dispute_provenance.sql','0008_pack_indexes.sql']) sqlite.exec(readFileSync(new URL('../../../migrations/'+file, import.meta.url), 'utf8'));
   const db = { prepare(sql:string) { let values:unknown[]=[]; const statement={bind(...args:unknown[]){values=args;return statement;},async first(){return sqlite.prepare(sql).get(...values as [])??null;},async all(){return {results:sqlite.prepare(sql).all(...values as [])};},async run(){return {meta:{changes:Number(sqlite.prepare(sql).run(...values as []).changes)}};}};return statement;} } as unknown as D1Database;
   return {sqlite,db};
 }

@@ -5,6 +5,7 @@ import { normalizeReference, request, type Envelope, type Note, type NoteTag, ty
 
 const Resource = Schema.Struct({ status: Schema.String, requestId: Schema.Number, payload: Schema.Unknown, error: Schema.String })
 export const Model = Schema.Struct({
+  researchFields: Schema.Record(Schema.String,Schema.String), researchDirty: Schema.Boolean, researchDiscardPending: Schema.Boolean, linkDirty: Schema.Boolean, disputeDirty: Schema.Boolean, researchVersion: Schema.Number, linkSaveVersion: Schema.Number, disputeSaveVersion: Schema.Number, extraAnchors: Schema.String, hebrewDisplay: Schema.String,
   ref: Schema.String, referenceInput: Schema.String, navigationError: Schema.String,
   serial: Schema.Number, selectedToken: Schema.String, tab: Schema.String,
   resources: Schema.Record(Schema.String, Resource),
@@ -16,6 +17,10 @@ export const Model = Schema.Struct({
 })
 export type Model = typeof Model.Type
 export const Message = defineMessageUnion({
+  ConfessionSearch: {},
+  Domain: {id:Schema.String}, Parallel: {ref:Schema.String},
+  ResearchReset: {}, ResearchResetConfirm: {}, ResearchResetCancel: {},
+  ResearchField: {field:Schema.String,value:Schema.String}, ResearchLoad: {}, ResearchSaveLink: {}, ResearchSaveDispute: {}, ResearchEditDispute: {dispute:Schema.Unknown}, QuotePage: {}, HebrewDisplay: {value:Schema.String},
   LookupLemma: { lemma: Schema.String },
   PhraseStart: { id: Schema.String }, PhraseEnd: { id: Schema.String }, ReadingMode: { value: Schema.String },
   BrowserDone: {}, RouteChanged: { href: Schema.String }, LinkRequested: { href: Schema.String },
@@ -63,10 +68,13 @@ function passageRequests(ref: string) { return [
   { key: 'passage', path: `/api/passage?ref=${query(ref)}` },
   { key: 'syntax', path: `/api/syntax?ref=${query(ref)}` },
   { key: 'citations', path: `/api/citations?ref=${query(ref)}` },
+  {key:'translations',path:'/api/translations?ref='+query(ref)},
+  {key:'confessions',path:'/api/confessions?id=WCF.21.5'},
   { key: 'crossreferences', path: `/api/crossreferences?ref=${query(ref)}` },
   { key: 'notes', path: `/api/notes?anchor=${query(ref)}` },
 ] }
 export const initialModel: Model = {
+  researchFields: {}, researchDirty:false, researchDiscardPending:false, linkDirty:false, disputeDirty:false, researchVersion:0, linkSaveVersion:0, disputeSaveVersion:0, extraAnchors:'', hebrewDisplay:'all',
   ref: 'Matt.28.19', referenceInput: 'Matt.28.19', navigationError: '', serial: 0, selectedToken: '', tab: 'word', resources: {},
   body: '', tags: '', provenanceTag: 'my-inference', sourceLocator: '', source: '', sourceEdition: '', sourceVersion: '', sourceLicense: '', sourceReview: '', sourceLink: '', editingId: '', dirty: false, editorVersion: 0, saveVersion: 0,
   discardPending: false, pendingToken: '', pageLocator: '', filterBook: '', filterForm: '', filterEdition: '', concordanceOffset: 0, phraseStart: '', readingMode: 'reading', lookupLemma: '', sourceId: '',
@@ -79,16 +87,19 @@ export function initFromUrl(href: string): Result {
   const url = new URL(href)
   const pathRef = url.pathname.startsWith('/study/') ? decodePath(url.pathname.slice(7)) : undefined
   const ref = normalizeReference(url.searchParams.get('ref') ?? pathRef ?? initialModel.ref) ?? initialModel.ref
-  const model = { ...initialModel, ref, referenceInput: ref, noteAnchorId: ref, tab: ['word','syntax','lexicon','reception','crossreferences','grammar'].includes(url.searchParams.get('tab') ?? '') ? url.searchParams.get('tab')! : 'word', pendingToken: url.searchParams.get('token') ?? '', lookupLemma: url.searchParams.get('lemma') ?? '', concordanceOffset: Math.max(0,Math.floor(Number(url.searchParams.get('offset')) || 0)), filterBook: url.searchParams.get('book') ?? '', filterForm: url.searchParams.get('form') ?? '', filterEdition: url.searchParams.get('edition') ?? '' }
+  const model = { ...initialModel, ref, referenceInput: ref, noteAnchorId: ref, tab: ['word','syntax','lexicon','reception','crossreferences','grammar','library'].includes(url.searchParams.get('tab') ?? '') ? url.searchParams.get('tab')! : 'word', pendingToken: url.searchParams.get('token') ?? '', lookupLemma: url.searchParams.get('lemma') ?? '', concordanceOffset: Math.max(0,Math.floor(Number(url.searchParams.get('offset')) || 0)), filterBook: url.searchParams.get('book') ?? '', filterForm: url.searchParams.get('form') ?? '', filterEdition: url.searchParams.get('edition') ?? '' }
   const requests = [...passageRequests(ref), { key: 'coverage', path: '/api/coverage' }, { key: 'session', path: '/auth/session' }]
+  if(url.searchParams.get('domain')){model.tab='library';model.researchFields={...model.researchFields,domainId:url.searchParams.get('domain')!};requests.push({key:'domain',path:'/api/semantic-domain?id='+query(model.researchFields.domainId)});}
+  if(url.searchParams.get('parallel')){model.tab='library';model.researchFields={...model.researchFields,parallelRef:url.searchParams.get('parallel')!};requests.push({key:'parallel',path:'/api/parallel?ref='+query(model.researchFields.parallelRef)});}
+  if(url.pathname.startsWith('/disputes/'))requests.push({key:'disputes',path:'/api/disputes/'+encodeURIComponent(decodePath(url.pathname.slice(10)))},{key:'researchNotes',path:'/api/notes'},{key:'links',path:'/api/note-links'});
   if (url.pathname === '/grammar') {
     model.tab = 'grammar'
     requests.push({key:'grammar',path:`/api/grammar?${url.searchParams}`})
   }
   if (url.pathname === '/lexicon' && url.searchParams.get('lemma')) {
     model.tab = 'lexicon'; model.lookupLemma = url.searchParams.get('lemma')!
-    const params = new URLSearchParams({lemma:model.lookupLemma})
-    requests.push({key:'lexicon',path:`/api/lexicon?${params}`},{key:'concordance',path:`/api/concordance?${params}`},{key:'distribution',path:`/api/distribution?${params}`})
+    const params = new URLSearchParams({lemma:model.lookupLemma,...(model.filterEdition?{edition:model.filterEdition}:{}),...(model.filterBook?{book:model.filterBook}:{}),...(model.filterForm?{form:model.filterForm}:{})})
+    requests.push({key:'lexicon',path:`/api/lexicon?${params}`},{key:'concordance',path:`/api/concordance?${params}&limit=100&offset=${model.concordanceOffset}`},{key:'distribution',path:`/api/distribution?${params}`})
   }
   if (url.pathname.startsWith('/sources/')) {
     model.tab = 'reception'; model.sourceId = decodePath(url.pathname.slice(9))
@@ -115,6 +126,39 @@ export function noteValidation(model: Model): string | undefined {
   return undefined
 }
 const coreUpdate = (model: Model, message: Message): Result => Message.match<Result>(message, {
+  ConfessionSearch: () => load({...model,tab:'library'},[{key:'confessions',path:'/api/confessions?id='+query(model.researchFields.confession||'WCF.21.5')}]),
+  Domain: ({id}) => load({...model,tab:'library',researchFields:{...model.researchFields,domainId:id}},[{key:'domain',path:'/api/semantic-domain?id='+query(id)}]),
+  Parallel: ({ref}) => load({...model,tab:'library',researchFields:{...model.researchFields,parallelRef:ref}},[{key:'parallel',path:'/api/parallel?ref='+query(ref)}]),
+  HebrewDisplay: ({value}) => ({model:{...model,hebrewDisplay:value}}),
+  ResearchReset: () => model.resources.disputeSave?.status==='loading'?{model}:model.disputeDirty?{model:{...model,researchDiscardPending:true}}:coreUpdate(model,Message.ResearchResetConfirm()),
+  ResearchResetCancel: () => ({model:{...model,researchDiscardPending:false}}),
+  ResearchResetConfirm: () => ({model:{...model,researchFields:Object.fromEntries(Object.entries(model.researchFields).filter(([key])=>['from','to','relation','confession'].includes(key))),disputeDirty:false,researchDirty:model.linkDirty,researchDiscardPending:false}}),
+  ResearchField: ({field,value}) => {
+    const lookup=field==='confession',link=['from','to','relation'].includes(field);
+    return {model:{...model,researchFields:{...model.researchFields,[field]:value},researchVersion:model.researchVersion+1,linkDirty:model.linkDirty||(!lookup&&link),disputeDirty:model.disputeDirty||(!lookup&&!link),researchDirty:model.researchDirty||!lookup}};
+  },
+  ResearchLoad: () => load(model,[{key:'researchNotes',path:'/api/notes'},{key:'links',path:'/api/note-links'},{key:'disputes',path:'/api/disputes'}]),
+  ResearchSaveLink: () => model.resources.linkSave?.status==='loading'?{model}:load({...model,linkSaveVersion:model.researchVersion},[{key:'linkSave',path:'/api/note-links',method:'POST',body:{from:model.researchFields.from,to:model.researchFields.to,relation:model.researchFields.relation||'supports'}}]),
+  ResearchEditDispute: ({dispute}) => {
+    if(model.researchDirty)return {model:{...model,notice:'Save your research draft before opening another dispute.'}};
+    const d=dispute as any,x=d.divergences[0],t=d.timeline[0];
+    return {model:{...model,researchFields:{...model.researchFields,id:d.id,revision:String(d.revision),question:d.question,leftId:d.positions[0].id,rightId:d.positions[1].id,leftTitle:d.positions[0].title,rightTitle:d.positions[1].title,leftNotes:d.positions[0].premises.join('\n'),rightNotes:d.positions[1].premises.join('\n'),extraPositions:JSON.stringify(d.positions.slice(2)),extraDivergences:JSON.stringify(d.divergences.slice(1)),extraTimeline:JSON.stringify(d.timeline.slice(1)),leftDivergence:x?.leftNote??'',rightDivergence:x?.rightNote??'',explanation:x?.explanation??'',historyDate:t?.date??'',historyNote:t?.noteId??'',historyDescription:t?.description??'',historySide:t?.positionId??d.positions[0].id}}};
+  },
+  ResearchSaveDispute: () => {
+    if(model.resources.disputeSave?.status==='loading')return {model};
+    const f=model.researchFields,ids=(text:string)=>text.split(/[\s,]+/).filter(Boolean);
+    try {
+      const dispute={question:f.question,positions:[{id:f.leftId||'left',title:f.leftTitle,premises:ids(f.leftNotes||'')},{id:f.rightId||'right',title:f.rightTitle,premises:ids(f.rightNotes||'')},...JSON.parse(f.extraPositions||'[]')],divergences:[...(f.leftDivergence&&f.rightDivergence?[{leftNote:f.leftDivergence,rightNote:f.rightDivergence,explanation:f.explanation}]:[]),...JSON.parse(f.extraDivergences||'[]')],timeline:[...(f.historyNote?[{date:f.historyDate,positionId:f.historySide||f.leftId||'left',noteId:f.historyNote,description:f.historyDescription}]:[]),...JSON.parse(f.extraTimeline||'[]')]};
+      return load({...model,disputeSaveVersion:model.researchVersion},[{key:'disputeSave',path:'/api/disputes'+(f.id?'/'+encodeURIComponent(f.id):''),method:f.id?'PUT':'POST',body:{revision:Number(f.revision),dispute}}]);
+    }catch{return {model:{...model,notice:'The saved dispute structure could not be read.'}};}
+  },
+  QuotePage: () => {
+    if(model.dirty)return {model:{...model,notice:'Save or discard the existing note draft first.'}};
+    const page=envelope<any>(model,'page')?.data;
+    if(!page?.text)return {model};
+    const next=coreUpdate(model,Message.AnchorSelected({type:'source-page',id:page.id}));
+    return {...next,model:{...next.model,body:page.text,provenanceTag:'quoted',dirty:true,editorVersion:model.editorVersion+1,extraAnchors:model.selectedToken?'token|'+model.selectedToken:'',notice:'Exact page text copied. Trim the quotation as needed; review status and locator are retained.'}};
+  },
   LookupLemma: ({lemma}) => lexicalRequests({...model,lookupLemma:lemma,tab:'lexicon'},0),
   PhraseStart: ({id}) => ({model:{...model,phraseStart:id,notice:'Select the end of your phrase, then anchor it. This is your selected span, not an imported clause analysis.'}}),
   PhraseEnd: ({id}) => model.phraseStart ? coreUpdate(model,Message.AnchorSelected({type:'phrase',id:`token-range:${model.phraseStart}..${id}`})) : {model:{...model,notice:'Select a phrase start first.'}},
@@ -122,10 +166,10 @@ const coreUpdate = (model: Model, message: Message): Result => Message.match<Res
   BrowserDone: () => ({ model }),
   LinkRequested: ({ href }) => {
     const url = new URL(href, 'https://workbench.invalid')
-    if (url.hash) return {model,commands:[Browser({href,external:true,dirty:model.dirty})]}
-    if ((url.pathname.startsWith('/api/') || url.pathname.startsWith('/auth/')) || !href.startsWith('/')) return { model, commands: [Browser({ href, external: true, dirty: model.dirty })] }
+    if (url.hash) return {model,commands:[Browser({href,external:true,dirty:model.dirty||model.researchDirty})]}
+    if ((url.pathname.startsWith('/api/') || url.pathname.startsWith('/auth/')) || !href.startsWith('/')) return { model, commands: [Browser({ href, external: true, dirty: model.dirty||model.researchDirty })] }
     const next = coreUpdate(model, Message.RouteChanged({ href: url.href }))
-    return { ...next, commands: [...(next.commands ?? []), Browser({ href: url.pathname + url.search, external: false, dirty: model.dirty })] }
+    return { ...next, commands: [...(next.commands ?? []), Browser({ href: url.pathname + url.search, external: false, dirty: model.dirty||model.researchDirty })] }
   },
   RouteChanged: ({ href }) => {
     const route = initFromUrl(href)
@@ -199,9 +243,21 @@ const coreUpdate = (model: Model, message: Message): Result => Message.match<Res
       if (note.anchor.type === 'token' && edited.selectedToken !== note.anchor.id) return select(edited,note.anchor.id)
       return {model:edited}
     }
+    if(key==='lexicon'){
+      const entries=(payload as Envelope<any[]>).data;
+      const entry=entries?.find(e=>e.strong||e.aliases?.some((a:string)=>/^[GH]\d+$/.test(a)));
+      const raw=entry?.strong??entry?.aliases?.find((a:string)=>/^[GH]\d+$/.test(a));
+      if(raw){const strong=(/^[GH]/.test(raw)?raw:(/hebrew|bdb/.test(entry.sourceId)?'H':'G')+raw).replace(/^([GH])0+(?=\d)/,'$1');return load(next,[{key:'renderings',path:'/api/renderings?strong='+query(strong)}]);}
+    }
     if (key === 'token') {
       const token = (payload as Envelope<TokenDetail>).data
       if (token?.lemma || next.lookupLemma) return lexicalRequests(next, next.concordanceOffset)
+    }
+    if (key === 'linkSave' || key === 'disputeSave') {
+      const unchanged=next.researchVersion===(key==='linkSave'?next.linkSaveVersion:next.disputeSaveVersion);
+      const linkDirty=key==='linkSave'&&unchanged?false:next.linkDirty,disputeDirty=key==='disputeSave'&&unchanged?false:next.disputeDirty;
+      const saved=(payload as Envelope<any>).data;
+      return coreUpdate({...next,linkDirty,disputeDirty,researchDirty:linkDirty||disputeDirty,researchFields:key==='disputeSave'?{...next.researchFields,id:saved.id,revision:String(saved.revision)}:next.researchFields,notice:unchanged?'Research saved.':'Earlier research version saved; newer edits remain unsaved.'},Message.ResearchLoad());
     }
     if (key === 'save') {
       const unchanged = next.editorVersion === next.saveVersion
@@ -210,7 +266,7 @@ const coreUpdate = (model: Model, message: Message): Result => Message.match<Res
     return { model: next }
   },
   EditorChanged: ({ field, value }) => {
-    if (!['body', 'tags', 'provenanceTag', 'sourceLocator', 'source', 'sourceEdition', 'sourceVersion', 'sourceLicense', 'sourceReview', 'sourceLink', 'noteAnchorType', 'noteAnchorId'].includes(field)) return { model }
+    if (!['body', 'tags', 'provenanceTag', 'sourceLocator', 'source', 'sourceEdition', 'sourceVersion', 'sourceLicense', 'sourceReview', 'sourceLink', 'noteAnchorType', 'noteAnchorId','extraAnchors'].includes(field)) return { model }
     return { model: { ...model, [field]: value, dirty: true, editorVersion: model.editorVersion + 1, notice: '' } }
   },
   Save: () => {
@@ -218,16 +274,16 @@ const coreUpdate = (model: Model, message: Message): Result => Message.match<Res
     if (error) return { model: { ...model, notice: error } }
     if (model.resources.save?.status === 'loading') return { model }
     return load({ ...model, saveVersion: model.editorVersion, notice: '' }, [{ key: 'save', path: `/api/notes${model.editingId ? `/${query(model.editingId)}` : ''}`, method: model.editingId ? 'PUT' : 'POST', body: {
-      anchor: { type: model.noteAnchorType, id: model.noteAnchorId }, body: model.body, tags: model.tags.split(',').map(t => t.trim()).filter(Boolean),
+      anchor: { type: model.noteAnchorType, id: model.noteAnchorId }, additionalAnchors:model.extraAnchors.split('\n').filter(x=>x.trim()).map(x=>{const at=x.indexOf('|');return {type:x.slice(0,at),id:x.slice(at+1)};}), body: model.body, tags: model.tags.split(',').map(t => t.trim()).filter(Boolean),
       provenanceTag: model.provenanceTag as NoteTag, ...(['quoted', 'paraphrased'].includes(model.provenanceTag) ? { sourceLocator: { source: model.source.trim(), edition: model.sourceEdition.trim(), version: model.sourceVersion.trim(), license: model.sourceLicense.trim(), locator: model.sourceLocator.trim(), reviewStatus: model.sourceReview.trim(), ...(model.sourceLink.trim() ? { deepLink: model.sourceLink.trim() } : {}) } } : {}),
     } }])
   },
   EditNote: ({ note }) => {
     if (model.dirty || model.resources.save?.status === 'loading') return { model: { ...model, notice: 'Save the current draft or discard it before opening another note.' } }
     const n = note as Note
-    return { model: { ...model, editingId: n.id, body: n.body, tags: n.tags.join(', '), provenanceTag: n.provenanceTag, sourceLocator: n.sourceLocator?.locator ?? '', source: n.sourceLocator?.source ?? '', sourceEdition: n.sourceLocator?.edition ?? '', sourceVersion: n.sourceLocator?.version ?? '', sourceLicense: n.sourceLocator?.license ?? '', sourceReview: n.sourceLocator?.reviewStatus ?? '', sourceLink: n.sourceLocator?.deepLink ?? '', noteAnchorType: n.anchor.type, noteAnchorId: n.anchor.id, notice: '', editorVersion: model.editorVersion + 1 } }
+    return { model: { ...model, extraAnchors:(n.additionalAnchors??[]).map(a=>a.type+'|'+a.id).join('\n'), editingId: n.id, body: n.body, tags: n.tags.join(', '), provenanceTag: n.provenanceTag, sourceLocator: n.sourceLocator?.locator ?? '', source: n.sourceLocator?.source ?? '', sourceEdition: n.sourceLocator?.edition ?? '', sourceVersion: n.sourceLocator?.version ?? '', sourceLicense: n.sourceLocator?.license ?? '', sourceReview: n.sourceLocator?.reviewStatus ?? '', sourceLink: n.sourceLocator?.deepLink ?? '', noteAnchorType: n.anchor.type, noteAnchorId: n.anchor.id, notice: '', editorVersion: model.editorVersion + 1 } }
   },
-  NewNote: () => model.dirty || model.resources.save?.status === 'loading' ? { model: { ...model, notice: 'Save the current draft or discard it before starting another note.' } } : { model: { ...model, editingId: '', body: '', tags: '', sourceLocator: '', source: '', sourceEdition: '', sourceVersion: '', sourceLicense: '', sourceReview: '', sourceLink: '', provenanceTag: 'my-inference', noteAnchorType: model.selectedToken ? 'token' : 'verse-range', noteAnchorId: model.selectedToken || model.ref, editorVersion: model.editorVersion + 1, notice: '' } },
+  NewNote: () => model.dirty || model.resources.save?.status === 'loading' ? { model: { ...model, notice: 'Save the current draft or discard it before starting another note.' } } : { model: { ...model, extraAnchors:'', editingId: '', body: '', tags: '', sourceLocator: '', source: '', sourceEdition: '', sourceVersion: '', sourceLicense: '', sourceReview: '', sourceLink: '', provenanceTag: 'my-inference', noteAnchorType: model.selectedToken ? 'token' : 'verse-range', noteAnchorId: model.selectedToken || model.ref, editorVersion: model.editorVersion + 1, notice: '' } },
   NotesQueryChanged: ({ value }) => ({ model: { ...model, noteQuery: value } }),
   SearchNotes: () => load(model, [{ key: 'notes', path: `/api/notes?q=${query(model.noteQuery)}` }]),
   SourceQueryChanged: ({ value }) => ({ model: { ...model, sourceQuery: value } }),
@@ -243,8 +299,9 @@ function lexicalRequests(model: Model, offset: number): Result {
   if (model.filterBook) params.set('book', model.filterBook)
   if (model.filterForm) params.set('form', model.filterForm)
   if (model.filterEdition) params.set('edition', model.filterEdition)
-  return load({ ...model, concordanceOffset: offset }, [
+  return load({ ...model, concordanceOffset: offset, resources:Object.fromEntries(Object.entries(model.resources).filter(([key])=>key!=='renderings')) }, [
     { key: 'lexicon', path: `/api/lexicon?lemma=${query(lemma)}` },
+
     { key: 'concordance', path: `/api/concordance?${params}&limit=100&offset=${offset}` },
     { key: 'distribution', path: `/api/distribution?${params}` },
   ])
@@ -253,18 +310,20 @@ export function studyUrl(model: Model): string {
   const params = new URLSearchParams()
   if (model.selectedToken || model.pendingToken) params.set('token', model.selectedToken || model.pendingToken)
   if (model.tab !== 'word') params.set('tab', model.tab)
+  if(model.tab==='library'&&model.researchFields.domainId)params.set('domain',model.researchFields.domainId)
+  if(model.tab==='library'&&model.researchFields.parallelRef)params.set('parallel',model.researchFields.parallelRef)
   if (model.concordanceOffset) params.set('offset',String(model.concordanceOffset))
   if (model.lookupLemma) params.set('lemma',model.lookupLemma)
   if (model.filterBook) params.set('book', model.filterBook)
   if (model.filterForm) params.set('form', model.filterForm)
   if (model.filterEdition) params.set('edition', model.filterEdition)
-  if (model.pageLocator) return `/source-page?${new URLSearchParams({ref:model.ref, locator:model.pageLocator})}`
+  if (model.pageLocator) return `/source-page?${new URLSearchParams({ref:model.ref, locator:model.pageLocator,...(model.selectedToken||model.pendingToken?{token:model.selectedToken||model.pendingToken}:{})})}`
   return `/study/${encodeURIComponent(model.ref)}${params.size ? `?${params}` : ''}`
 }
 export function update(model: Model, message: Message): Result {
   const result = coreUpdate(model, message)
-  const routing = !result.model.navigationError && ['Navigate','SelectToken','TabChanged','OpenPage','SearchConcordance','LookupLemma','ConcordancePage'].includes(message._tag)
-  const protectionChanged = model.dirty !== result.model.dirty
-  if (routing || protectionChanged) return { ...result, commands: [...(result.commands ?? []), Browser({ href: routing ? studyUrl(result.model) : '', external: false, dirty: result.model.dirty })] }
+  const routing = !result.model.navigationError && ['Domain','Parallel','Navigate','SelectToken','TabChanged','OpenPage','SearchConcordance','LookupLemma','ConcordancePage'].includes(message._tag)
+  const protectionChanged = (model.dirty || model.researchDirty) !== (result.model.dirty || result.model.researchDirty)
+  if (routing || protectionChanged) return { ...result, commands: [...(result.commands ?? []), Browser({ href: routing ? studyUrl(result.model) : '', external: false, dirty: result.model.dirty || result.model.researchDirty })] }
   return result
 }

@@ -1,0 +1,22 @@
+{
+  "core": {
+    "passage": 100674,
+    "token": 782696,
+    "syntax": 23213,
+    "confession": 475,
+    "lexicon": 20519,
+    "translation": 31085,
+    "mapping": 5623,
+    "coverage": 1
+  },
+  "sa": {
+    "lexicon": 13450,
+    "domain": 1153,
+    "coverage": 1
+  },
+  "nc": {
+    "passage": 29659,
+    "token": 623693,
+    "coverage": 1
+  }
+}

@@ -29,7 +29,7 @@ describe('reference navigation and selection', () => {
   it('starts on Matthew with real server requests and a schema-valid model', () => {
     const result = init()
     expect(result.model.ref).toBe('Matt.28.19')
-    expect(result.commands?.map(c => c.args?.key)).toEqual(['passage','syntax','citations','crossreferences','notes','coverage','session'])
+    expect(result.commands?.map(c => c.args?.key)).toEqual(['passage','syntax','citations','translations','confessions','crossreferences','notes','coverage','session'])
     expect(Schema.decodeUnknownSync(Model)(result.model)).toEqual(result.model)
   })
   it('selects the actual supplied αὐτούς token, without assuming a corpus ID', () => {
@@ -247,3 +247,40 @@ it('opens a linked note on its own token rather than the default autous selectio
   expect(result.model.noteAnchorId).toBe(note.anchor.id)
   expect(result.commands?.[0].args?.path).toBe('/api/token?id=sblgnt%3AMatt.28.19%3A6')
 })
+
+describe('research editing safeguards',()=>{
+ it('preserves extra positions and historical witnesses while editing the first comparison',()=>{
+  const d={id:'d',revision:3,question:'Question',positions:[{id:'a',title:'A',premises:['n1']},{id:'b',title:'B',premises:['n2']},{id:'c',title:'C',premises:['n3']}],divergences:[{leftNote:'n1',rightNote:'n2',explanation:'Old'},{leftNote:'n1',rightNote:'n3',explanation:'Other'}],timeline:[{date:'1647',positionId:'a',noteId:'n1',description:'Old witness'},{date:'1700',positionId:'c',noteId:'n3',description:'Keep'}]};
+  let m=update(initialModel,Message.ResearchEditDispute({dispute:d})).model;
+  m=update(m,Message.ResearchField({field:'explanation',value:'Revised'})).model;
+  m=update(m,Message.ResearchField({field:'historyDescription',value:'Revised witness'})).model;
+  const args=update(m,Message.ResearchSaveDispute()).commands![0].args as any;
+  expect(args.body.dispute.positions).toEqual(d.positions);
+  expect(args.body.dispute.divergences[0].explanation).toBe('Revised');
+  expect(args.body.dispute.timeline[0].description).toBe('Revised witness');
+  expect(args.body.dispute.timeline[1]).toEqual(d.timeline[1]);
+ });
+ it('keeps other drafts and edits made during a save dirty',()=>{
+  let m=update(initialModel,Message.ResearchField({field:'question',value:'Unsaved question'})).model;
+  m=update(m,Message.ResearchField({field:'from',value:'n1'})).model;
+  m=update(m,Message.ResearchSaveLink()).model;
+  m=update(m,Message.Loaded({key:'linkSave',requestId:m.serial,payload:envelope({id:'link'}),error:''})).model;
+  expect(m.researchDirty).toBe(true);expect(m.disputeDirty).toBe(true);expect(m.linkDirty).toBe(false);
+  m=update(m,Message.ResearchSaveDispute()).model;
+  m=update(m,Message.ResearchField({field:'question',value:'Newer question'})).model;
+  m=update(m,Message.Loaded({key:'disputeSave',requestId:m.serial,payload:envelope({id:'d',revision:1}),error:''})).model;
+  expect(m.researchDirty).toBe(true);expect(m.researchFields.question).toBe('Newer question');expect(m.researchFields.revision).toBe('1');
+  expect(update(initialModel,Message.ResearchField({field:'confession',value:'WLC.1'})).model.researchDirty).toBe(false);
+ });
+ it('allows native Psalm headings but never chapter zero',()=>{
+  expect(normalizeReference('Ps 3:0')).toBe('Ps.3.0');expect(normalizeReference('Ps 0:1')).toBeUndefined();
+ });
+});
+
+it('derives rendering lookup from the active lexicon, not an unrelated selected token',()=>{
+ const m={...initialModel,lookupLemma:'ψαλμός',selectedToken:'sblgnt:Matt.28.19:8'};
+ const result=ready('lexicon',[{sourceId:'abbott-smith',strong:'5568'}],m);
+ expect(result.commands?.[0]?.args?.path).toBe('/api/renderings?strong=G5568');
+ const url=initFromUrl('https://workbench.test/lexicon?lemma=ψαλμός&edition=lxx');
+ expect(url.commands?.find(c=>c.args?.key==='concordance')?.args?.path).toContain('edition=lxx');
+});

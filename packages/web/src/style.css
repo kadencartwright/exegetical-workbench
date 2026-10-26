@@ -16,3 +16,5 @@
 .distribution meter::-webkit-meter-bar{background:#e8edf5;border:0;border-radius:4px}
 .distribution meter::-webkit-meter-optimum-value{background:#5479bf}
 .distribution meter::-moz-meter-bar{background:#5479bf}
+
+.argument-workspace{margin-top:1.5rem}.argument-workspace input,.argument-workspace textarea{display:block;width:100%;margin:.35rem 0 1rem}.dispute{border-top:1px solid #d8dfe8;margin-top:1.5rem;padding-top:1rem}.reverse-interlinear{display:flex;flex-wrap:wrap;gap:1rem}.alignment-word{display:flex;flex-direction:column;max-width:14rem;padding:.5rem;border-bottom:1px solid #d8dfe8}.alignment-word>span{font-size:.85rem}.source-text{white-space:pre-wrap;overflow-wrap:anywhere}

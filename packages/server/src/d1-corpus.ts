@@ -25,10 +25,10 @@ export function d1Corpus(db: D1Database, bucket?: R2Bucket): CorpusAdapter {
     const metadata = await records("kind IN ('coverage','grammar','catalog')"); add(metadata);
     const counts:Record<string,number> = JSON.parse(metadata.find(r=>r.kind==='catalog')?.json??'{}').counts??{};
     if (!corpus.coverage.length) corpus.coverage.push({ sourceId:'corpus', status:'not-loaded', scope:'No indexed corpus', limitations:['Import the pinned corpus SQL into this D1 database. No corpus search was performed.'] });
-    const range = () => { const r=parseReference(params.ref); return [referenceOrder(`${r.book}.${r.startChapter}.${r.startVerse??1}`),referenceOrder(`${r.book}.${r.endChapter}.${r.following?999:r.endVerse??999}`)]; };
+    const range = () => { const r=parseReference(params.ref); return [referenceOrder(`${r.book}.${r.startChapter}.${r.startVerse??0}`),referenceOrder(`${r.book}.${r.endChapter}.${r.following?999:r.endVerse??999}`)]; };
     if (operation === 'passage' || operation === 'syntax') {
       let selection; try { selection = parseReference(params.ref); } catch { throw new ServiceError(400,'invalid-reference','Expected a supported Scripture reference.'); }
-      if (selection.startVerse && selection.startChapter === selection.endChapter && selection.startVerse === selection.endVerse && !selection.following) add(await records("kind=? AND json_extract(json,'$.ref')=?",[operation, selection.ref]));
+      if (selection.startVerse !== undefined && selection.startChapter === selection.endChapter && selection.startVerse === selection.endVerse && !selection.following) add(await records("kind=? AND json_extract(json,'$.ref')=?",[operation, selection.ref]));
       else for (let chapter=selection.startChapter; chapter<=selection.endChapter; chapter++) add(await records("kind=? AND json_extract(json,'$.ref') GLOB ?",[operation,`${selection.book}.${chapter}.*`]));
       if(operation==='passage'){const existing=new Set(corpus.passages.map(p=>p.ref));const required=new Set(corpus.passages.flatMap(p=>Object.values(parallelReferences(p.ref,referenceEdition(params.refEdition))).flat()));for(const ref of required)if(!existing.has(ref))add(await records("kind='passage' AND id=?",[ref]));}
       if(operation==='syntax') for(const s of corpus.syntax??[]) add(await records("kind='passage' AND id=?",[s.ref]));

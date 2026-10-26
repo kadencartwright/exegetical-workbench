@@ -1,0 +1,123 @@
+{
+  "date": "2026-10-26T22:36:17.139Z",
+  "deployment": false,
+  "milestones": {
+    "M1": {
+      "autous": "sblgnt:Matt.28.19:8",
+      "grammar": 6,
+      "citations": 14
+    },
+    "M2": {
+      "page": "reception:1590-beza-de-vera-excommunicatione/parts/part-03-english:p:106",
+      "original": {
+        "id": "reception:1590-beza-de-vera-excommunicatione/parts/part-03-english:p:106",
+        "kind": "printed",
+        "label": "[Scan 128; p. 106]",
+        "frame": "128",
+        "printedPage": "106"
+      },
+      "dualAnchorNote": "f8ddcb61-dd10-4600-89e7-3be386b7022b",
+      "reviewStatus": "AI-assisted, unreviewed"
+    },
+    "M3": {
+      "counts": {
+        "ψαλμός": {
+          "lxxTokens": 92,
+          "combinedTokens": 99,
+          "verseGroupsWithHebrew": 80,
+          "importedMappingGroups": 71,
+          "candidateComparisonGroups": 9,
+          "withoutHebrew": [
+            "Ps.151.1",
+            "Jdt.16.1",
+            "3Macc.6.35",
+            "PssSol.2.0",
+            "PssSol.3.0",
+            "PssSol.3.2",
+            "PssSol.5.0",
+            "PssSol.13.0",
+            "PssSol.15.0",
+            "PssSol.15.3",
+            "PssSol.17.0",
+            "PssSol.18.0"
+          ]
+        },
+        "ὕμνος": {
+          "lxxTokens": 33,
+          "combinedTokens": 35,
+          "verseGroupsWithHebrew": 16,
+          "importedMappingGroups": 12,
+          "candidateComparisonGroups": 4,
+          "withoutHebrew": [
+            "Jdt.16.13",
+            "1Macc.4.33",
+            "1Macc.13.47",
+            "1Macc.13.51",
+            "2Macc.1.30",
+            "2Macc.10.7",
+            "2Macc.10.38",
+            "2Macc.12.37",
+            "3Macc.7.16",
+            "4Macc.10.21",
+            "1Esd.5.58",
+            "Odes.8.0",
+            "Odes.14.0",
+            "PssSol.3.1",
+            "PssSol.10.0",
+            "PssSol.14.0",
+            "PssSol.16.0"
+          ]
+        },
+        "ᾠδή": {
+          "lxxTokens": 88,
+          "combinedTokens": 95,
+          "verseGroupsWithHebrew": 69,
+          "importedMappingGroups": 44,
+          "candidateComparisonGroups": 25,
+          "withoutHebrew": [
+            "Sir.39.15",
+            "Sir.47.17",
+            "1Macc.4.54",
+            "1Macc.13.51",
+            "2Macc.7.6",
+            "3Macc.6.32",
+            "4Macc.18.18",
+            "Odes.1.0",
+            "Odes.2.0",
+            "Odes.4.19",
+            "Odes.10.0",
+            "PssSol.15.0",
+            "PssSol.15.3",
+            "PssSol.17.0",
+            "TobS.2.6",
+            "TobS.13.18"
+          ]
+        }
+      },
+      "confession": "WCF.21.5",
+      "proofTexts": [
+        "Acts 15:21; Rev. 1:3",
+        "2 Tim. 4:2",
+        "James 1:22; Acts 10:33; Matt. 13:19; Heb. 4:2; Isa. 66:2",
+        "Col. 3:16; Eph. 5:19; James 5:13",
+        "Matt. 28:19; 1 Cor. 11:23 to 29; Acts 2:42",
+        "Deut. 6:13 with Neh. 10:29",
+        "Isa. 19:21 with Eccles. 5:4, 5",
+        "Joel 2:12; Esther 4:16; Matt. 9:15; 1 Cor. 7:5",
+        "Ps. 107 throughout; Esther 9:22",
+        "Heb. 12:28"
+      ],
+      "hebrewEditions": [
+        "oshb",
+        "macula-hebrew"
+      ]
+    },
+    "M4": {
+      "dispute": "503e9a0f-898a-458f-be16-77cdff7a2352",
+      "positions": 2,
+      "divergences": 1,
+      "timelineWitnesses": 1,
+      "provenance": "agent-generated"
+    }
+  }
+}

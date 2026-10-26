@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-26",
+  "browser": "T3 collaborative preview",
+  "origin": "http://localhost:5174",
+  "viewports": [
+    [
+      1280,
+      800
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "horizontalOverflow": false,
+  "M2": {
+    "bilingualPage": "reception:1590-beza-de-vera-excommunicatione/parts/part-03-english:p:106",
+    "quoteSaved": "b9d52fa7-c11d-4a1f-9cb8-73f21aef7895",
+    "additionalTokenAnchor": "sblgnt:1Tim.5.17:4"
+  },
+  "M3": {
+    "lxxPsalmTokensShown": 92,
+    "domain": "ubs-greek:033",
+    "domainLabel": "Communication",
+    "hebrewPointingToggle": "consonants checked, no vowel or cantillation marks",
+    "parallel": "Ps.3.1",
+    "confession": "WCF.21.5"
+  },
+  "M4": {
+    "editedExample": "a255cf07-3c87-4b6e-b8c3-38c90d4ffc5a",
+    "revision": 2,
+    "oldProvenanceRetained": "agent-generated",
+    "twoPositionsAndExplicitDivergence": true
+  },
+  "deployment": false
+}

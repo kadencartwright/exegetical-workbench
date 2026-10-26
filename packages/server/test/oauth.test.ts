@@ -123,4 +123,18 @@ describe('actual Cloudflare OAuth provider and remote MCP',()=>{
   const verified=await authorizationServer(origin).validateToken(origin+'/mcp',next.access_token,env);expect(verified?.props).toMatchObject({id:40246541,login:'kadencartwright'});expect(verified?.scope).toContain('mcp:read');
  });
 
+ it('exposes agent writes only after an explicit mcp:write grant',async()=>{
+  ghMock();
+  for(const scope of ['mcp:read','mcp:read mcp:write']){
+   const login=await mcpLogin(scope);const tokens=await (await exchange(login.client.clientId!,login.code,login.verifier)).json() as any;
+   const call=async(method:string,params?:unknown)=>send('/mcp',{method:'POST',headers:{Authorization:'Bearer '+tokens.access_token,'Content-Type':'application/json',Accept:'application/json, text/event-stream'},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})});
+   const listed=await (await call('tools/list')).json() as any;
+   expect(listed.result.tools.some((t:any)=>t.name==='create_note')).toBe(scope.includes('mcp:write'));
+   if(scope.includes('mcp:write')){
+    const response=await (await call('tools/call',{name:'create_note',arguments:{input:{anchor:{type:'verse-range',id:'Eph.5.19'},body:'Agent scope test',tags:[],provenanceTag:'my-inference'}}})).json() as any;
+    expect(JSON.parse(response.result.content[0].text).data.provenanceTag).toBe('agent-generated');
+   }
+  }
+ });
+
 });

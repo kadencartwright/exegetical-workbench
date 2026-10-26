@@ -57,4 +57,8 @@ Parent integration now loads all 110 work inventories, exposes `/api/source?id=.
 
 Real browser OAuth login/callback/logout verification requires a registered GitHub OAuth app, configured credentials, canonical HTTPS origin and D1/KV resources. Browser and live persistence checks used explicitly labeled local-development auth. Provisioning and deployment are deferred at the user's request.
 
-Reverse English-to-Greek alignment, exhaustive versification, excluded or unaudited lexical packs, untranslated/omitted reception material and original-text redistribution remain corpus coverage boundaries. Consult the corpus contract and source audit for the exact limits.
+The initial M1 checkpoint did not include reverse interlinear or later licensed packs. Current coverage is documented below; exhaustive versification, untranslated/omitted material and original-text redistribution remain boundaries. Consult the corpus contract and source audit for the exact limits.
+
+## M2–M4 extension
+
+See [current milestone acceptance and limits](../../docs/milestones-local.md). The UI now includes exact-marker bilingual pages, quote-to-note with dual anchors, optional Hebrew/LXX/UBS data, reverse interlinear, Westminster proof texts, linked notes, editable disputes and historical witnesses. Research drafts survive unrelated saves; revision conflicts are explicit. The source-page deep link preserves the selected token. Vite proxies MCP and OAuth discovery as well as HTTP/auth. The older M1-only coverage notes above describe that initial checkpoint.

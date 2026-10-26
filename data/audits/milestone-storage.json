@@ -1,0 +1,103 @@
+{
+  "databaseBytes": 5052194816,
+  "packRecords": [
+    {
+      "pack": "core",
+      "kind": "confession",
+      "count": 475
+    },
+    {
+      "pack": "core",
+      "kind": "coverage",
+      "count": 1
+    },
+    {
+      "pack": "core",
+      "kind": "lexicon",
+      "count": 20519
+    },
+    {
+      "pack": "core",
+      "kind": "mapping",
+      "count": 5623
+    },
+    {
+      "pack": "core",
+      "kind": "passage",
+      "count": 100674
+    },
+    {
+      "pack": "core",
+      "kind": "syntax",
+      "count": 23213
+    },
+    {
+      "pack": "core",
+      "kind": "token",
+      "count": 782696
+    },
+    {
+      "pack": "core",
+      "kind": "translation",
+      "count": 31085
+    },
+    {
+      "pack": "nc",
+      "kind": "coverage",
+      "count": 1
+    },
+    {
+      "pack": "nc",
+      "kind": "passage",
+      "count": 29659
+    },
+    {
+      "pack": "nc",
+      "kind": "token",
+      "count": 623693
+    },
+    {
+      "pack": "private",
+      "kind": "citation",
+      "count": 5326
+    },
+    {
+      "pack": "private",
+      "kind": "coverage",
+      "count": 1
+    },
+    {
+      "pack": "private",
+      "kind": "original",
+      "count": 2027
+    },
+    {
+      "pack": "private",
+      "kind": "page",
+      "count": 2407
+    },
+    {
+      "pack": "private",
+      "kind": "source",
+      "count": 311
+    },
+    {
+      "pack": "sa",
+      "kind": "coverage",
+      "count": 1
+    },
+    {
+      "pack": "sa",
+      "kind": "domain",
+      "count": 1153
+    },
+    {
+      "pack": "sa",
+      "kind": "lexicon",
+      "count": 13450
+    }
+  ],
+  "lexicalKeys": 52446,
+  "renderingGroups": 13206,
+  "migrationCount": 8
+}

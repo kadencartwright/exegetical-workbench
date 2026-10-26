@@ -10,3 +10,6 @@ data/downloads/
 data/generated/
 coverage/
 packages/server/.generated/
+
+__pycache__/
+*.pyc

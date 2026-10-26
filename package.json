@@ -16,7 +16,12 @@
     "dev:prepare": "npm run db:migrate:local && npm run db:corpus:local",
     "corpus:acquire": "npm run import --workspace @exegetical/corpus -- acquire --source all",
     "corpus:import": "npm run import --workspace @exegetical/corpus -- build --refresh --export",
-    "corpus:sample": "npm run import --workspace @exegetical/corpus -- build --sample"
+    "corpus:sample": "npm run import --workspace @exegetical/corpus -- build --sample",
+    "packs:acquire": "python3 packages/corpus/scripts/acquire-packs.py",
+    "packs:build": "python3 packages/corpus/scripts/milestone-packs.py",
+    "packs:private": "node packages/corpus/scripts/private-reception.mjs",
+    "packs:load:local": "python3 packages/server/scripts/load-packs-local.py",
+    "test:milestones": "node scripts/verify-milestones.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20261026.1",

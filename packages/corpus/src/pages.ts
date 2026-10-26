@@ -1,6 +1,8 @@
 import type { PageLocator } from './models.ts';
 export function normalizeLocator(sourceId: string, marker: string): PageLocator | undefined {
  const raw=marker.replace(/^\[|\]$/g,'').trim();
+ const scan=/^Scan\s+(\d+);\s*(?:(?:printed\s+)?p\.\s*(\d+)|signature\s+([A-Za-z0-9]+))/i.exec(raw);
+ if(scan)return {id:`reception:${sourceId}:`+(scan[2]?`p:${scan[2]}`:`sig:${scan[3]}`),kind:scan[2]?'printed':'signature',label:marker,frame:scan[1],...(scan[2]?{printedPage:scan[2]}:{signature:scan[3]})};
  const co=/^CO\s+([^,]+),\s*p\.\s*([\w–-]+)$/i.exec(raw);
  const pdf=/^(?:PDF\s+(?:p\.|page)|Frame)\s*([\w–-]+)(?:;\s*printed\s+(?:p\.|page)\s*([\w–-]+))?$/i.exec(raw);
  const printed=/^(?:printed\s+)?p\.\s*([\w–-]+)$/i.exec(raw);

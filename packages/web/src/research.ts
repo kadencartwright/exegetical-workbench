@@ -52,7 +52,7 @@ export function lexiconView(h: H, value: unknown): Html {
   const entries = records(value)
   return h.div([h.Class('lexicon-grid')], entries.length ? entries.map(e => h.article([h.Class('lexicon-card')], [
     h.h4([], [text(e.sourceId)]), h.h3([h.Lang('grc')], [text(e.lemma)]), h.p([h.Class('caption')], [[e.strong,e.transliteration].filter(Boolean).join(' · ')]),
-    h.p([], [text(e.gloss, '')]), h.p([h.Class('definition')], [text(e.definition)]),
+    ...(Array.isArray(e.domains)?e.domains.map((id:string)=>h.button([h.Type('button'),h.OnClick(Message.Domain({id:e.sourceId+':'+id}))],['Domain '+id])):[]),h.p([], [text(e.gloss, '')]), h.p([h.Class('definition')], [text(e.definition)]),
     h.p([h.Class('locator')], [text(e.provenance?.locator)]), h.p([h.Class('caption')], [[e.provenance?.edition,e.provenance?.version,e.provenance?.license].filter(Boolean).join(' · ')]),
     ...(safeLink(e.provenance?.upstreamUrl) ? [h.a([h.Href(safeLink(e.provenance.upstreamUrl)!),h.Target('_blank'),h.Rel('noopener noreferrer')], ['Lexicon source ↗'])] : []),
   ])) : [h.p([h.Class('empty')], ['No lexicon entries returned. Interlinear glosses are not substitutes for lexicon witnesses. Check coverage.'])])
@@ -61,7 +61,7 @@ export function concordanceFilters(h: H, model: Model): Html {
   return h.form([h.OnSubmit(Message.SearchConcordance()), h.Class('filters')], [
     h.label([], ['Book', h.select([h.Value(model.filterBook),h.OnChange(value => Message.FilterChanged({field:'filterBook',value})),h.AriaLabel('Concordance book')], [h.option([h.Value('')], ['All books']), ...ntBooks.map(b => h.option([h.Value(b.id)], [b.name]))])]),
     h.label([], ['Exact form',h.input([h.Value(model.filterForm),h.AriaLabel('Concordance form'),h.OnInput(value => Message.FilterChanged({field:'filterForm',value}))])]),
-    h.label([], ['Edition',h.select([h.Value(model.filterEdition),h.AriaLabel('Concordance edition'),h.OnChange(value => Message.FilterChanged({field:'filterEdition',value}))], [h.option([h.Value('')], ['All editions']), h.option([h.Value('sblgnt')], ['SBLGNT']),h.option([h.Value('bsb')], ['BSB'])])]),
+    h.label([], ['Edition',h.select([h.Value(model.filterEdition),h.AriaLabel('Concordance edition'),h.OnChange(value => Message.FilterChanged({field:'filterEdition',value}))], [h.option([h.Value('')], ['All editions']), h.option([h.Value('sblgnt')], ['SBLGNT']),h.option([h.Value('bsb')], ['BSB']),h.option([h.Value('lxx')],['LXX']),h.option([h.Value('sblgnt,lxx')],['LXX + NT']),h.option([h.Value('oshb')],['OSHB']),h.option([h.Value('macula-hebrew')],['Macula Hebrew'])])]),
     h.button([h.Type('submit')], ['Apply filters']),
   ])
 }
@@ -85,7 +85,7 @@ export function concordanceView(h: H, model: Model, value: unknown): Html {
   const rows = records(value)
   return h.div([], [h.ol([h.Class('concordance')],rows.map(row => {
     const token = row.token ?? row, ref = row.ref ?? token.id?.split(':')[1]
-    return h.li([], [h.a([h.Href(`/study/${encodeURIComponent(ref ?? model.ref)}?token=${encodeURIComponent(token.id ?? '')}`)], [text(ref)]), ' · ',h.span([h.Lang('grc')], [text(token.text)]),' · ',text(row.edition ?? token.sourceId),h.p([h.Class('caption')], [text(token.gloss ?? token.morphology?.description,'')])])
+    return h.li([], [h.a([h.Href(`/study/${encodeURIComponent(ref ?? model.ref)}?token=${encodeURIComponent(token.id ?? '')}`)], [text(ref)]), ' · ',h.span([h.Lang('grc')], [text(token.text)]),' · ',text(row.edition ?? token.sourceId),...(row.edition==='lxx'?[h.button([h.Type('button'),h.OnClick(Message.Parallel({ref}))],['Hebrew parallel'])]:[]),h.p([h.Class('caption')], [text(token.gloss ?? token.morphology?.description,'')])])
   })), ...(!rows.length ? [h.p([h.Class('empty')], ['No matches for these filters in the loaded corpus.'])] : []), h.div([h.Class('actions')], [h.button([h.Type('button'),h.Disabled(model.concordanceOffset === 0),h.OnClick(Message.ConcordancePage({offset:model.concordanceOffset-100}))], ['Previous 100']),h.span([], [`${model.concordanceOffset + (rows.length ? 1 : 0)}–${model.concordanceOffset+rows.length}`]),h.button([h.Type('button'),h.Disabled(model.concordanceOffset + rows.length >= (envelope<RecordData>(model,'distribution')?.data?.total ?? Infinity) || rows.length < 100),h.OnClick(Message.ConcordancePage({offset:model.concordanceOffset+100}))], ['Next 100'])])])
 }
 export function crossreferencesView(h: H, value: unknown): Html {
@@ -96,7 +96,21 @@ export function sourcePageView(h: H, value: unknown, model?: Model): Html {
   const p = value as RecordData | null
   if (!p) return h.p([h.Class('empty')], ['This exact source page is not loaded.'])
   const source = records(model && envelope(model,'sourceLibrary')?.data).find(s => s.id === p.sourceId)
-  return h.article([h.Class('source-reader')], [h.h3([], [text(p.locator?.label ?? p.locator ?? p.id)]),h.p([h.Class('badge review')], [text(p.provenance?.reviewStatus)]),h.p([h.Class('source-text')], [text(p.text)]),h.p([h.Class('locator')], [text(p.id)]),h.button([h.Type('button'),h.OnClick(Message.AnchorSelected({type:'source-page',id:p.id}))], ['Anchor note to this page']),...(safeLink(p.originalUrl ?? source?.originalUrl ?? p.provenance?.upstreamUrl) ? [h.a([h.Class('source-link'),h.Href(safeLink(p.originalUrl ?? source?.originalUrl ?? p.provenance?.upstreamUrl)!),h.Target('_blank'),h.Rel('noopener noreferrer')], [p.originalUrl || source?.originalUrl ? 'Open original witness ↗' : 'Open pinned source file ↗'])] : [])])
+  const reception=p.provenance?.source==='reformed-retrieval'
+  const upstream=safeLink(p.originalUrl??source?.originalUrl??p.provenance?.upstreamUrl)
+  return h.article([h.Class('source-reader')],[
+    h.h3([],[text(p.locator?.label??p.locator??p.id)]),
+    h.p([h.Class('badge review')],[text(p.provenance?.reviewStatus)]),
+    h.div([h.Class(reception?'parallel':'source-section')],[
+      h.div([],[h.h4([],[reception?'English · AI-assisted, unreviewed':'Source text']),h.p([h.Class('source-text')],[text(p.text)])]),
+      ...(reception?[h.div([],[h.h4([],['Original language']),h.p([h.Class('caption')],[text(p.original?.alignmentStatus,'No aligned original loaded')]),h.p([h.Class('source-text'),h.Lang(p.original?.language||'la')],[text(p.original?.text,'Original text is not loaded for this page.')])])]:[]),
+    ]),
+    h.button([h.Type('button'),h.OnClick(Message.QuotePage())],['Quote page into note']),
+    ...(reception?[h.a([h.Href('https://github.com/kadencartwright/reformed-retrieval/issues/new?title='+encodeURIComponent('Source correction: '+text(p.id))+'&body='+encodeURIComponent('Locator: '+text(p.id)+'\nPinned source: '+text(p.provenance?.upstreamUrl)+'\n\nObserved error:\n\nSuggested correction:\n')),h.Target('_blank'),h.Rel('noopener noreferrer')],['Draft source correction ↗'])]:[]),
+    h.p([h.Class('locator')],[text(p.id)]),
+    h.button([h.Type('button'),h.OnClick(Message.AnchorSelected({type:'source-page',id:p.id}))],['Anchor note to this page']),
+    ...(upstream?[h.a([h.Class('source-link'),h.Href(upstream),h.Target('_blank'),h.Rel('noopener noreferrer')],[p.originalUrl||source?.originalUrl?'Open original witness ↗':'Open pinned source file ↗'])]:[]),
+  ])
 }
 
 export function sourceResultsView(h: H, model: Model, value: unknown): Html {
@@ -124,4 +138,20 @@ export function coverageView(h: H, value: unknown): Html {
     ])
   }
   return h.div([], [h.p([h.Class('caption')],[`${sources.length} dataset coverage records; ${works.length} work inventory records returned. Expand a record for its exact limits.`]),...sources.map(card),...(works.length ? [h.details([h.Class('work-inventory')],[h.summary([],[`Reception work inventory · ${works.length} works`]),...works.map(card)])] : [])])
+}
+
+export function translationView(h:H,value:unknown):Html {
+ const data=value as RecordData|null;
+ return h.div([h.Class('reverse-interlinear')],data?.words?.length?records(data.words).map(w=>h.span([h.Class('alignment-word')],[h.strong([],[text(w.english)]),h.span([h.Lang(/[\u0590-\u05FF]/.test(w.original)?'he':'grc')],[text(w.original)]),h.span([h.Class('caption')],[text(w.parse)]),h.span([h.Class('locator')],[text(w.strong)])])):[h.p([],['Translation table is not loaded for this reference.'])]);
+}
+export function confessionView(h:H,value:unknown):Html {
+ return h.div([],records(value).map(c=>h.article([],[h.h4([],[text(c.id)+' · '+text(c.title)]),h.button([h.Type('button'),h.OnClick(Message.OpenPage({locator:c.id}))],['Quote or annotate this section']),h.p([h.Class('source-text')],[text(c.text)]),...(c.proofTexts?.length?[h.details([],[h.summary([],['Proof texts']),h.pre([h.Class('source-text')],[c.proofTexts.map((p:unknown)=>typeof p==='string'?p:JSON.stringify(p,null,2)).join('\n')])])]:[]),h.p([h.Class('caption')],[text(c.provenance?.edition)+' · '+text(c.provenance?.license)]),h.a([h.Href(c.provenance?.upstreamUrl),h.Target('_blank'),h.Rel('noopener noreferrer')],['Pinned confessional source ↗'])])));
+}
+export function parallelView(h:H,value:unknown):Html {
+ const data=value as RecordData|null;
+ return h.div([],data?[h.h4([],[text(data.ref)+' · LXX reference']),h.p([h.Class('caption')],[text(data.mapping?.method??data.status)]),...records(data.hebrew).map(e=>h.article([],[h.h4([],[text(e.provenance?.locator)]),h.p([h.Dir('rtl'),h.Lang('he'),h.Class('passage-text')],[text(e.text)]),h.a([h.Href('/study/'+encodeURIComponent(e.provenance?.locator))],['Inspect Hebrew words'])]))]:[h.p([],['Choose Hebrew parallel from an LXX concordance occurrence.'])]);
+}
+export function domainView(h:H,value:unknown):Html {
+ const data=value as RecordData|null;
+ return h.div([],data?[...records(data.domains).map(d=>h.div([],[h.h4([],[text(d.label)+' · '+text(d.code)]),h.p([],[text(d.description)]),h.p([],[text(d.comment)])])),...records(data.entries).map(e=>h.article([],[h.a([h.Href('/lexicon?lemma='+encodeURIComponent(e.lemma))],[text(e.lemma)]),h.p([],[text(e.definition)])]))]:[h.p([],['Choose a domain from a UBS lexical entry.'])]);
 }

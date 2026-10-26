@@ -43,7 +43,7 @@ describe.runIf(Boolean(base))('live web API acceptance against full corpus',()=>
   it('supports independent lexicons and intersected concordance filters/distribution',async()=>{
     const entries = await get('/api/lexicon?lemma=G846')
     expect(new Set(entries.data.map((e:any)=>e.sourceId)).size).toBeGreaterThanOrEqual(2)
-    const total = await get('/api/distribution?lemma=G846')
+    const total = await get('/api/distribution?lemma=G846&edition=sblgnt')
     expect(total.data.total).toBeGreaterThan(100)
     const matches = await get('/api/concordance?lemma=G846&book=John&edition=sblgnt&limit=10&offset=0')
     expect(matches.data.length).toBeGreaterThan(0)
@@ -61,7 +61,7 @@ describe.runIf(Boolean(base))('live web API acceptance against full corpus',()=>
     expect(coverage.data.find((c:any)=>c.sourceId==='sblgnt').status).toBe('loaded')
   })
   it('counts whole-source ethnos matches and preserves intentionally blank BSB slots',async()=>{
-    const all = await get(`/api/distribution?lemma=${encodeURIComponent('ἔθνος')}`)
+    const all = await get(`/api/distribution?lemma=${encodeURIComponent('ἔθνος')}&edition=sblgnt`)
     expect(all.data.total).toBe(160)
     const matt = await get(`/api/distribution?lemma=${encodeURIComponent('ἔθνος')}&book=Matt`)
     expect(matt.data.total).toBe(15)

@@ -1,6 +1,6 @@
 # Worker services
 
-The browser HTTP API and read-only remote MCP call the same Effect services and the corpus package's shared query implementation. Production serves the Foldkit build through the Worker's `ASSETS` binding, on the API's origin. There is no bundled corpus, built-in agent, cloud deployment script, or unauthenticated production shortcut.
+The browser HTTP API and remote MCP call the same Effect services and the corpus package's shared query implementation. Production serves the Foldkit build through the Worker's `ASSETS` binding, on the API's origin. There is no bundled corpus, built-in agent, cloud deployment script, or unauthenticated production shortcut.
 
 ## Local setup
 
@@ -57,9 +57,9 @@ No credentials were requested, installed or exposed, and no cloud resources were
 
 All JSON evidence responses preserve `{ data, coverage, provenance }`. Existing HTTP paths in `docs/implementation.md` are retained, including invalid-reference 400 errors. Additions: `/api/source?id=...`, `/api/grammar?category=...`, `/api/crossreferences?ref=...`, `/api/distribution?lemma=...`, `/api/semantic-domain?id=...`. Passage/syntax ranges and concordance `book`, `form`, `edition`, `offset`, `limit` are supported. BSB's explicitly empty upstream verse slots preserve `textStatus:'empty-upstream'`; absent text is not invented.
 
-MCP uses the official SDK Web Standard Streamable HTTP transport. Tools: `get_passage`, `get_token`, `get_syntax`, `lexicon_lookup`, `concordance`, `distribution`, `crossreferences`, `grammar`, `semantic_domain`, `citations_of`, `search_sources`, `get_source_page`, `coverage`, `provenance`, `search_notes`, `get_note`. All are annotated read-only; note creation/linking/deletion is absent. UBS semantic domains honestly report the optional SA pack as not loaded.
+MCP uses the official SDK Web Standard Streamable HTTP transport. Read tools cover text, grammar, reception, concordance, semantic domains, confessions, translation alignment/renderings, Hebrew parallels, notes, note links and disputes. `create_note`, `link_notes` and `create_dispute` are registered only with `mcp:write`; agent provenance is enforced in the shared service. Explicit local development grants write access for testing. See [M1–M4 integration](../../docs/milestones-local.md).
 
-Notes persist in D1 with owner checks on list/get/update, FTS search, Markdown export and stable ownership across authenticated sessions. Quoted/paraphrased notes require the complete structured source locator. HTTP writes represent the human author; M1 rejects `agent-generated` writes. A successful update preserves creation time. Existing local-development notes are intentionally a separate identity from production GitHub notes.
+Notes persist in D1 with owner checks on list/get/update, FTS search, Markdown export and stable ownership across authenticated sessions. Quoted/paraphrased notes require the complete structured source locator. HTTP writes represent the human author and reject client attempts to impersonate agent provenance. MCP writes always receive `agent-generated`. A successful update preserves creation time. Existing local-development notes are intentionally a separate identity from production GitHub notes.
 
 ## Verification
 

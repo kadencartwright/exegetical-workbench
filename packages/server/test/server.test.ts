@@ -26,7 +26,7 @@ const input = { anchor: { type: 'token', id: 'Matt.28.19.autous' }, body: 'Agree
 const request = (path: string, init?: RequestInit) => new Request(`http://localhost:8787${path}`, init);
 beforeEach(() => {
   sqlite = new DatabaseSync(':memory:');
-  sqlite.exec(readFileSync(new URL('../../../migrations/0001_notes.sql', import.meta.url), 'utf8'));
+  for(const file of ['0001_notes.sql','0005_research.sql'])sqlite.exec(readFileSync(new URL('../../../migrations/'+file, import.meta.url), 'utf8'));
   env = { DB: sqliteD1(sqlite), APP_ENV: 'development', AUTH_MODE: 'local-development' };
 });
 afterEach(() => sqlite.close());
@@ -107,15 +107,15 @@ describe('MCP Streamable HTTP', () => {
     expect(result.result.serverInfo.name).toBe('exegetical-workbench');
     expect(result.result.capabilities.tools).toBeDefined();
   });
-  it('advertises only read tools and refuses note mutation', async () => {
+  it('advertises explicit agent writes in local development and enforces provenance', async () => {
     const result = await rpc('tools/list');
     const tools = result.result.tools;
     expect(tools.map((t: any) => t.name)).toEqual(expect.arrayContaining(['get_passage', 'get_note', 'search_notes', 'coverage', 'provenance']));
-    expect(tools.every((t: any) => t.annotations.readOnlyHint)).toBe(true);
-    expect(tools.some((t: any) => /create|write|delete|link_notes/.test(t.name))).toBe(false);
-    const attempt = await rpc('tools/call', { name: 'create_note', arguments: input });
-    expect(attempt.result?.isError || attempt.error).toBeTruthy();
-    expect((await createServices(unavailableCorpus, d1Notes(env.DB)).notes('local-development-user')).data).toEqual([]);
+    expect(tools.find((t:any)=>t.name==='create_note').annotations.readOnlyHint).toBe(false);
+    expect(tools.some((t:any)=>t.name==='delete_note')).toBe(false);
+    const attempt = await rpc('tools/call', { name: 'create_note', arguments: {input} });
+    expect(attempt.result?.isError).toBeUndefined();
+    expect((await createServices(unavailableCorpus, d1Notes(env.DB)).notes('local-development-user')).data[0].provenanceTag).toBe('agent-generated');
   });
   it('carries coverage and restricts note results to the authenticated principal', async () => {
     const services = createServices(unavailableCorpus, d1Notes(env.DB));
