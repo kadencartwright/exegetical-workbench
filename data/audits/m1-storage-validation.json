@@ -1,0 +1,20 @@
+{
+  "statementsExecuted": 695459,
+  "counts": {
+    "citation": 5318,
+    "coverage": 9,
+    "crossreference": 344799,
+    "grammar": 10,
+    "inventory": 110,
+    "lexicon": 17188,
+    "manifest": 7,
+    "page": 2347,
+    "passage": 7959,
+    "source": 311,
+    "syntax": 7939,
+    "token": 309458
+  },
+  "r2OnlyRecords": 10,
+  "seconds": 7.48,
+  "integrity": "ok"
+}

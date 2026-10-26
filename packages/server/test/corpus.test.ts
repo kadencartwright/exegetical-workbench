@@ -25,7 +25,7 @@ describe('bundled corpus boundary', () => {
     expect(lexical.coverage.find(c => c.source === 'lexicon')?.status).toBe('not-loaded');
     const concordance = await adapter.query('concordance', { lemma: 'test', book: 'John' });
     expect(concordance.data).toEqual([]);
-    expect(concordance.coverage.find(c => c.source === 'concordance')?.status).toBe('partial');
+    expect(concordance.coverage.find(c => c.source === 'test-fixture')?.status).toBe('partial');
   });
   it('rejects invalid references as client errors through the Effect service', async () => {
     const response = await createApp(adapter).fetch(new Request('https://example.com/api/passage?ref=not-a-verse'), { DB: {} } as Env);

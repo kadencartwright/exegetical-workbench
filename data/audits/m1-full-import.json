@@ -1,0 +1,360 @@
+{
+  "verifiedAt": "2026-10-26",
+  "counts": {
+    "coverage": 9,
+    "manifest": 7,
+    "passage": 7959,
+    "token": 309458,
+    "syntax": 7939,
+    "lexicon": 17188,
+    "grammar": 10,
+    "crossreference": 344799,
+    "source": 311,
+    "page": 2347,
+    "citation": 5318,
+    "inventory": 110
+  },
+  "editionVerses": {
+    "sblgnt": 7939,
+    "bsbSlots": 7957,
+    "bsbNonempty": 7941,
+    "emptySlots": [
+      "bsb:Matt.17.21",
+      "bsb:Matt.18.11",
+      "bsb:Matt.23.14",
+      "bsb:Mark.7.16",
+      "bsb:Mark.9.44",
+      "bsb:Mark.9.46",
+      "bsb:Mark.11.26",
+      "bsb:Mark.15.28",
+      "bsb:Luke.17.36",
+      "bsb:Luke.23.17",
+      "bsb:John.5.4",
+      "bsb:Acts.8.37",
+      "bsb:Acts.15.34",
+      "bsb:Acts.24.7",
+      "bsb:Acts.28.29",
+      "bsb:Rom.16.24"
+    ]
+  },
+  "greekTokens": 137741,
+  "parseableTokens": 137741,
+  "referentTargets": 6681,
+  "unresolvedReferentTargets": 1,
+  "unresolvedReferentExamples": [
+    "n00000000000"
+  ],
+  "lexicalCounts": {
+    "step-tbesg": 11035,
+    "abbott-smith": 6153
+  },
+  "ethnosDistribution": {
+    "total": 160,
+    "books": [
+      {
+        "book": "Acts",
+        "count": 43
+      },
+      {
+        "book": "Rom",
+        "count": 28
+      },
+      {
+        "book": "Rev",
+        "count": 22
+      },
+      {
+        "book": "Matt",
+        "count": 15
+      },
+      {
+        "book": "Luke",
+        "count": 13
+      },
+      {
+        "book": "Gal",
+        "count": 10
+      },
+      {
+        "book": "Mark",
+        "count": 6
+      },
+      {
+        "book": "Eph",
+        "count": 5
+      },
+      {
+        "book": "John",
+        "count": 5
+      },
+      {
+        "book": "1Cor",
+        "count": 3
+      },
+      {
+        "book": "1Pet",
+        "count": 3
+      },
+      {
+        "book": "1Thess",
+        "count": 2
+      },
+      {
+        "book": "1Tim",
+        "count": 2
+      },
+      {
+        "book": "2Cor",
+        "count": 1
+      },
+      {
+        "book": "2Tim",
+        "count": 1
+      },
+      {
+        "book": "Col",
+        "count": 1
+      }
+    ],
+    "forms": [
+      {
+        "form": "ἔθνη",
+        "count": 51
+      },
+      {
+        "form": "ἐθνῶν",
+        "count": 45
+      },
+      {
+        "form": "ἔθνεσιν",
+        "count": 31
+      },
+      {
+        "form": "ἔθνος",
+        "count": 18
+      },
+      {
+        "form": "ἔθνει",
+        "count": 7
+      },
+      {
+        "form": "ἔθνους",
+        "count": 7
+      },
+      {
+        "form": "ἔθνεσι",
+        "count": 1
+      }
+    ],
+    "editions": [
+      {
+        "edition": "sblgnt",
+        "count": 160
+      }
+    ]
+  },
+  "matthew2819": {
+    "citations": 14,
+    "crossreferences": 37,
+    "masculineToken": {
+      "id": "sblgnt:Matt.28.19:8",
+      "text": "αὐτοὺς",
+      "lemma": "ἑαυτοῦ",
+      "strong": "848",
+      "gloss": "them",
+      "transliteration": "aytoys",
+      "morphology": {
+        "code": "P-APM",
+        "gender": "masculine",
+        "number": "plural",
+        "case": "accusative",
+        "partOfSpeech": "pronoun",
+        "description": "pronoun, plural, masculine, accusative"
+      },
+      "sourceId": "macula",
+      "upstreamId": "n40028019008",
+      "referents": [
+        "n40028019006"
+      ],
+      "provenance": {
+        "source": "macula",
+        "edition": "Macula SBLGNT",
+        "version": "8423afe47b9e8f24b7772e808af45c7159a6fe7e",
+        "license": "CC-BY-4.0",
+        "locator": "Matt.28.19",
+        "reviewStatus": "upstream",
+        "deepLink": "/study/Matt.28.19",
+        "upstreamUrl": "https://github.com/Clear-Bible/macula-greek"
+      }
+    },
+    "grammar": [
+      {
+        "id": "smyth-concord",
+        "category": "agreement",
+        "title": "Agreement and construction according to sense",
+        "summary": "Application explanation: Smyth distinguishes ordinary concord from construction according to sense and attraction. These categories require examination of the actual construction.",
+        "canEstablish": "A mismatch in grammatical gender can be identified and compared with documented agreement according to sense.",
+        "cannotEstablish": "A gender mismatch alone cannot rule out a referent or decide whether a command addresses nations corporately or people within them.",
+        "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/258/mode/2up",
+        "locator": "Smyth §§925–926, pp. 258–259",
+        "provenance": {
+          "source": "smyth",
+          "edition": "Smyth (1920)",
+          "version": "1920-original-checked-2026-10-26",
+          "license": "Public-Domain (underlying original); application paraphrase MIT",
+          "locator": "Smyth §§925–926, pp. 258–259",
+          "reviewStatus": "upstream",
+          "deepLink": "/grammar?id=smyth-concord",
+          "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/258/mode/2up"
+        }
+      },
+      {
+        "id": "robertson-matt-28-19",
+        "category": "referent",
+        "title": "Personal pronouns according to sense: Matthew 28:19",
+        "summary": "Application explanation: In his discussion of personal pronouns according to sense, Robertson explicitly relates αὐτούς in Matthew 28:19 to ἔθνη. He compares other pronoun usages involving grammatical and natural gender.",
+        "canEstablish": "A documented grammarian treats the masculine pronoun as referring to the neuter noun; grammatical gender alone does not make that reference impossible.",
+        "cannotEstablish": "This observation does not independently establish a corporate political, covenantal, or exclusively individual interpretation, or any baptismal policy.",
+        "url": "https://archive.org/details/grammarofgreekne00robe_0/page/684/mode/2up",
+        "locator": "Robertson, ch. XV.I(e), pp. 683–684",
+        "provenance": {
+          "source": "robertson",
+          "edition": "Robertson (1914)",
+          "version": "1914-original-checked-2026-10-26",
+          "license": "Public-Domain (underlying original); application paraphrase MIT",
+          "locator": "Robertson, ch. XV.I(e), pp. 683–684",
+          "reviewStatus": "upstream",
+          "deepLink": "/grammar?id=robertson-matt-28-19",
+          "upstreamUrl": "https://archive.org/details/grammarofgreekne00robe_0/page/684/mode/2up"
+        }
+      },
+      {
+        "id": "smyth-gender",
+        "category": "gender",
+        "title": "Grammatical and natural gender",
+        "summary": "Application explanation: Greek has masculine, feminine and neuter grammatical gender. Grammatical gender and the sex or personhood of a referent are distinct; masculine forms may designate mixed classes.",
+        "canEstablish": "Gender is a feature of the annotated Greek form, useful for agreement checks.",
+        "cannotEstablish": "Neuter does not mean inanimate and masculine does not mean only male persons. Gender cannot by itself determine the social extent of a referent.",
+        "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/45/mode/2up",
+        "locator": "Smyth §§196–197, p. 45",
+        "provenance": {
+          "source": "smyth",
+          "edition": "Smyth (1920)",
+          "version": "1920-original-checked-2026-10-26",
+          "license": "Public-Domain (underlying original); application paraphrase MIT",
+          "locator": "Smyth §§196–197, p. 45",
+          "reviewStatus": "upstream",
+          "deepLink": "/grammar?id=smyth-gender",
+          "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/45/mode/2up"
+        }
+      },
+      {
+        "id": "smyth-number",
+        "category": "number",
+        "title": "Number",
+        "summary": "Application explanation: Singular, dual and plural are inflectional categories. The NT annotations in this pack primarily distinguish singular and plural.",
+        "canEstablish": "The form can be classified as singular or plural in the supplied analysis.",
+        "cannotEstablish": "Plural alone cannot decide between collective and distributive interpretations, or count the people intended.",
+        "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/45/mode/2up",
+        "locator": "Smyth §195, p. 45",
+        "provenance": {
+          "source": "smyth",
+          "edition": "Smyth (1920)",
+          "version": "1920-original-checked-2026-10-26",
+          "license": "Public-Domain (underlying original); application paraphrase MIT",
+          "locator": "Smyth §195, p. 45",
+          "reviewStatus": "upstream",
+          "deepLink": "/grammar?id=smyth-number",
+          "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/45/mode/2up"
+        }
+      },
+      {
+        "id": "smyth-case",
+        "category": "case",
+        "title": "Case and agreement",
+        "summary": "Application explanation: Case constrains syntactic relations; the subject of a finite verb is ordinarily nominative, and apposition involves case concord. Each construction still requires syntactic analysis.",
+        "canEstablish": "Case can constrain candidate syntactic relations when combined with verb and clause structure.",
+        "cannotEstablish": "An accusative is not always a direct object, and a genitive does not by itself select one English relationship or theological conclusion.",
+        "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/259/mode/2up",
+        "locator": "Smyth §§925–927, pp. 258–259",
+        "provenance": {
+          "source": "smyth",
+          "edition": "Smyth (1920)",
+          "version": "1920-original-checked-2026-10-26",
+          "license": "Public-Domain (underlying original); application paraphrase MIT",
+          "locator": "Smyth §§925–927, pp. 258–259",
+          "reviewStatus": "upstream",
+          "deepLink": "/grammar?id=smyth-case",
+          "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/259/mode/2up"
+        }
+      },
+      {
+        "id": "smyth-partOfSpeech",
+        "category": "partOfSpeech",
+        "title": "Parts of speech and verbal forms",
+        "summary": "Application explanation: Inflected forms must be interpreted in their phrase and clause; participles combine verbal and nominal properties.",
+        "canEstablish": "The imported part-of-speech category supports a plain-language parse.",
+        "cannotEstablish": "A part-of-speech tag alone cannot supply a missing argument, word sense or discourse function.",
+        "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/107/mode/2up",
+        "locator": "Smyth, Inflection: voices, moods and verbal nouns, p. 107",
+        "provenance": {
+          "source": "smyth",
+          "edition": "Smyth (1920)",
+          "version": "1920-original-checked-2026-10-26",
+          "license": "Public-Domain (underlying original); application paraphrase MIT",
+          "locator": "Smyth, Inflection: voices, moods and verbal nouns, p. 107",
+          "reviewStatus": "upstream",
+          "deepLink": "/grammar?id=smyth-partOfSpeech",
+          "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/107/mode/2up"
+        }
+      }
+    ]
+  },
+  "editionDifferences": {
+    "sblgntOnly": [
+      "3John.1.15",
+      "Rev.12.18"
+    ],
+    "bsbOnly": [
+      "Matt.17.21",
+      "Matt.18.11",
+      "Matt.23.14",
+      "Mark.7.16",
+      "Mark.9.44",
+      "Mark.9.46",
+      "Mark.11.26",
+      "Mark.15.28",
+      "Luke.17.36",
+      "Luke.23.17",
+      "John.5.4",
+      "Acts.8.37",
+      "Acts.15.34",
+      "Acts.19.41",
+      "Acts.24.7",
+      "Acts.28.29",
+      "Rom.16.25",
+      "Rom.16.26",
+      "Rom.16.27",
+      "2Cor.13.14"
+    ]
+  },
+  "inventory": {
+    "completed": 82,
+    "inProgress": 28,
+    "importedFiles": 311
+  },
+  "maxRecordBytes": {
+    "coverage": 610,
+    "manifest": 8018,
+    "passage": 56560,
+    "token": 953,
+    "syntax": 55691,
+    "lexicon": 5147,
+    "grammar": 1223,
+    "crossreference": 428,
+    "source": 1811,
+    "page": 469640,
+    "citation": 2086,
+    "inventory": 43528
+  }
+}

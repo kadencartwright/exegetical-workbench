@@ -1,0 +1,5 @@
+OpenBible.info Bible Cross References
+Source: https://www.openbible.info/labs/cross-references/
+Audited 2026-10-26. Footer license link resolves to Creative Commons Attribution 4.0 International: https://creativecommons.org/licenses/by/4.0/
+Archive contains reference keys and votes, no ESV text. All Scripture quotation text and the site HTML are excluded.
+Attribution: OpenBible.info / Stephen Smith; underlying references primarily Treasury of Scripture Knowledge.

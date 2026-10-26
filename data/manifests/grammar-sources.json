@@ -1,0 +1,55 @@
+[
+  {
+    "id": "smyth",
+    "edition": "1920",
+    "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog",
+    "file": {
+      "path": "smyth/agreekgrammarfo02smytgoog_djvu.txt",
+      "url": "https://archive.org/download/agreekgrammarfo02smytgoog/agreekgrammarfo02smytgoog_djvu.txt",
+      "sha256": "a3c0026de1be6467b1eda69a95db48cc349299f0ed524c5efdabf5f6e7592e86"
+    },
+    "included": [
+      "Verified section/page locators",
+      "Application-authored bounded explanations"
+    ],
+    "excluded": [
+      "Full OCR transcription",
+      "Digital scans",
+      "Perseus/Alpheios NC markup"
+    ],
+    "license": "Public-domain underlying original; no scan/markup redistribution claimed",
+    "verifiedPageLabels": {
+      "45": 66,
+      "107": 128,
+      "258": 279,
+      "259": 280,
+      "479": 500
+    },
+    "pageLabelSource": "https://archive.org/download/agreekgrammarfo02smytgoog/agreekgrammarfo02smytgoog_scandata.xml"
+  },
+  {
+    "id": "robertson",
+    "edition": "1914",
+    "upstreamUrl": "https://archive.org/details/grammarofgreekne00robe_0",
+    "file": {
+      "path": "robertson/grammarofgreekne00robe_0_djvu.txt",
+      "url": "https://archive.org/download/grammarofgreekne00robe_0/grammarofgreekne00robe_0_djvu.txt",
+      "sha256": "f66f109ef01a34f27092b2c8af55f8c9e87ba7b1afb877959866280794d9d693"
+    },
+    "included": [
+      "Verified section/page locators",
+      "Application-authored bounded explanations"
+    ],
+    "excluded": [
+      "Full OCR transcription",
+      "Digital scans",
+      "Perseus/Alpheios NC markup"
+    ],
+    "license": "Public-domain underlying original; no scan/markup redistribution claimed",
+    "verifiedPageLabels": {
+      "683": 729,
+      "684": 730
+    },
+    "pageLabelSource": "https://archive.org/download/grammarofgreekne00robe_0/grammarofgreekne00robe_0_scandata.xml"
+  }
+]

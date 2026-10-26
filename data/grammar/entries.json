@@ -1,0 +1,202 @@
+[
+  {
+    "id": "smyth-concord",
+    "category": "agreement",
+    "title": "Agreement and construction according to sense",
+    "summary": "Application explanation: Smyth distinguishes ordinary concord from construction according to sense and attraction. These categories require examination of the actual construction.",
+    "canEstablish": "A mismatch in grammatical gender can be identified and compared with documented agreement according to sense.",
+    "cannotEstablish": "A gender mismatch alone cannot rule out a referent or decide whether a command addresses nations corporately or people within them.",
+    "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/258/mode/2up",
+    "locator": "Smyth §§925–926, pp. 258–259",
+    "provenance": {
+      "source": "smyth",
+      "edition": "Smyth (1920)",
+      "version": "1920-original-checked-2026-10-26",
+      "license": "Public-Domain (underlying original); application paraphrase MIT",
+      "locator": "Smyth §§925–926, pp. 258–259",
+      "reviewStatus": "upstream",
+      "deepLink": "/grammar?id=smyth-concord",
+      "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/258/mode/2up"
+    }
+  },
+  {
+    "id": "robertson-matt-28-19",
+    "category": "referent",
+    "title": "Personal pronouns according to sense: Matthew 28:19",
+    "summary": "Application explanation: In his discussion of personal pronouns according to sense, Robertson explicitly relates αὐτούς in Matthew 28:19 to ἔθνη. He compares other pronoun usages involving grammatical and natural gender.",
+    "canEstablish": "A documented grammarian treats the masculine pronoun as referring to the neuter noun; grammatical gender alone does not make that reference impossible.",
+    "cannotEstablish": "This observation does not independently establish a corporate political, covenantal, or exclusively individual interpretation, or any baptismal policy.",
+    "url": "https://archive.org/details/grammarofgreekne00robe_0/page/684/mode/2up",
+    "locator": "Robertson, ch. XV.I(e), pp. 683–684",
+    "provenance": {
+      "source": "robertson",
+      "edition": "Robertson (1914)",
+      "version": "1914-original-checked-2026-10-26",
+      "license": "Public-Domain (underlying original); application paraphrase MIT",
+      "locator": "Robertson, ch. XV.I(e), pp. 683–684",
+      "reviewStatus": "upstream",
+      "deepLink": "/grammar?id=robertson-matt-28-19",
+      "upstreamUrl": "https://archive.org/details/grammarofgreekne00robe_0/page/684/mode/2up"
+    }
+  },
+  {
+    "id": "smyth-gender",
+    "category": "gender",
+    "title": "Grammatical and natural gender",
+    "summary": "Application explanation: Greek has masculine, feminine and neuter grammatical gender. Grammatical gender and the sex or personhood of a referent are distinct; masculine forms may designate mixed classes.",
+    "canEstablish": "Gender is a feature of the annotated Greek form, useful for agreement checks.",
+    "cannotEstablish": "Neuter does not mean inanimate and masculine does not mean only male persons. Gender cannot by itself determine the social extent of a referent.",
+    "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/45/mode/2up",
+    "locator": "Smyth §§196–197, p. 45",
+    "provenance": {
+      "source": "smyth",
+      "edition": "Smyth (1920)",
+      "version": "1920-original-checked-2026-10-26",
+      "license": "Public-Domain (underlying original); application paraphrase MIT",
+      "locator": "Smyth §§196–197, p. 45",
+      "reviewStatus": "upstream",
+      "deepLink": "/grammar?id=smyth-gender",
+      "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/45/mode/2up"
+    }
+  },
+  {
+    "id": "smyth-number",
+    "category": "number",
+    "title": "Number",
+    "summary": "Application explanation: Singular, dual and plural are inflectional categories. The NT annotations in this pack primarily distinguish singular and plural.",
+    "canEstablish": "The form can be classified as singular or plural in the supplied analysis.",
+    "cannotEstablish": "Plural alone cannot decide between collective and distributive interpretations, or count the people intended.",
+    "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/45/mode/2up",
+    "locator": "Smyth §195, p. 45",
+    "provenance": {
+      "source": "smyth",
+      "edition": "Smyth (1920)",
+      "version": "1920-original-checked-2026-10-26",
+      "license": "Public-Domain (underlying original); application paraphrase MIT",
+      "locator": "Smyth §195, p. 45",
+      "reviewStatus": "upstream",
+      "deepLink": "/grammar?id=smyth-number",
+      "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/45/mode/2up"
+    }
+  },
+  {
+    "id": "smyth-case",
+    "category": "case",
+    "title": "Case and agreement",
+    "summary": "Application explanation: Case constrains syntactic relations; the subject of a finite verb is ordinarily nominative, and apposition involves case concord. Each construction still requires syntactic analysis.",
+    "canEstablish": "Case can constrain candidate syntactic relations when combined with verb and clause structure.",
+    "cannotEstablish": "An accusative is not always a direct object, and a genitive does not by itself select one English relationship or theological conclusion.",
+    "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/259/mode/2up",
+    "locator": "Smyth §§925–927, pp. 258–259",
+    "provenance": {
+      "source": "smyth",
+      "edition": "Smyth (1920)",
+      "version": "1920-original-checked-2026-10-26",
+      "license": "Public-Domain (underlying original); application paraphrase MIT",
+      "locator": "Smyth §§925–927, pp. 258–259",
+      "reviewStatus": "upstream",
+      "deepLink": "/grammar?id=smyth-case",
+      "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/259/mode/2up"
+    }
+  },
+  {
+    "id": "smyth-person",
+    "category": "person",
+    "title": "Person and number in finite verbs",
+    "summary": "Application explanation: Finite verbs ordinarily agree with their subjects in person and number.",
+    "canEstablish": "A second-person plural finite form addresses a plural grammatical subject.",
+    "cannotEstablish": "Person and number do not identify all implied participants or the scope of every later application of a command.",
+    "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/258/mode/2up",
+    "locator": "Smyth §925.1, p. 258",
+    "provenance": {
+      "source": "smyth",
+      "edition": "Smyth (1920)",
+      "version": "1920-original-checked-2026-10-26",
+      "license": "Public-Domain (underlying original); application paraphrase MIT",
+      "locator": "Smyth §925.1, p. 258",
+      "reviewStatus": "upstream",
+      "deepLink": "/grammar?id=smyth-person",
+      "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/258/mode/2up"
+    }
+  },
+  {
+    "id": "smyth-aorist",
+    "category": "tense",
+    "title": "Aorist and duration",
+    "summary": "Application explanation: Smyth describes the aorist indicative as presenting a past event without specifying how long it occupied. Other moods must not be assigned past time merely from the aorist stem.",
+    "canEstablish": "An aorist annotation identifies the tense stem; context and mood determine its use.",
+    "cannotEstablish": "Aorist does not itself establish instantaneous, once-for-all or unrepeatable action. An aorist imperative is not thereby a past-time command.",
+    "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/479/mode/2up",
+    "locator": "Smyth §1923, p. 479",
+    "provenance": {
+      "source": "smyth",
+      "edition": "Smyth (1920)",
+      "version": "1920-original-checked-2026-10-26",
+      "license": "Public-Domain (underlying original); application paraphrase MIT",
+      "locator": "Smyth §1923, p. 479",
+      "reviewStatus": "upstream",
+      "deepLink": "/grammar?id=smyth-aorist",
+      "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/479/mode/2up"
+    }
+  },
+  {
+    "id": "smyth-voice",
+    "category": "voice",
+    "title": "Voice",
+    "summary": "Application explanation: Voice describes the relation of the subject to the verbal action. Middle and passive forms and meanings need to be distinguished in context.",
+    "canEstablish": "The upstream analysis supplies an active, middle or passive classification.",
+    "cannotEstablish": "A voice label alone cannot decide the identity of an unexpressed agent or whether a traditional deponent label resolves the semantics.",
+    "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/107/mode/2up",
+    "locator": "Smyth, Inflection: voices, moods and verbal nouns, p. 107",
+    "provenance": {
+      "source": "smyth",
+      "edition": "Smyth (1920)",
+      "version": "1920-original-checked-2026-10-26",
+      "license": "Public-Domain (underlying original); application paraphrase MIT",
+      "locator": "Smyth, Inflection: voices, moods and verbal nouns, p. 107",
+      "reviewStatus": "upstream",
+      "deepLink": "/grammar?id=smyth-voice",
+      "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/107/mode/2up"
+    }
+  },
+  {
+    "id": "smyth-mood",
+    "category": "mood",
+    "title": "Mood and verbal nouns",
+    "summary": "Application explanation: Greek distinguishes indicative, subjunctive, optative and imperative; infinitives and participles are verbal nouns in the traditional classification.",
+    "canEstablish": "The annotation identifies a formal category for interpreting the clause.",
+    "cannotEstablish": "An imperative alone does not identify every intended recipient; a participle does not automatically mean a temporal sequence or a second independent command.",
+    "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/107/mode/2up",
+    "locator": "Smyth, Inflection: voices, moods and verbal nouns, p. 107",
+    "provenance": {
+      "source": "smyth",
+      "edition": "Smyth (1920)",
+      "version": "1920-original-checked-2026-10-26",
+      "license": "Public-Domain (underlying original); application paraphrase MIT",
+      "locator": "Smyth, Inflection: voices, moods and verbal nouns, p. 107",
+      "reviewStatus": "upstream",
+      "deepLink": "/grammar?id=smyth-mood",
+      "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/107/mode/2up"
+    }
+  },
+  {
+    "id": "smyth-partOfSpeech",
+    "category": "partOfSpeech",
+    "title": "Parts of speech and verbal forms",
+    "summary": "Application explanation: Inflected forms must be interpreted in their phrase and clause; participles combine verbal and nominal properties.",
+    "canEstablish": "The imported part-of-speech category supports a plain-language parse.",
+    "cannotEstablish": "A part-of-speech tag alone cannot supply a missing argument, word sense or discourse function.",
+    "url": "https://archive.org/details/agreekgrammarfo02smytgoog/page/107/mode/2up",
+    "locator": "Smyth, Inflection: voices, moods and verbal nouns, p. 107",
+    "provenance": {
+      "source": "smyth",
+      "edition": "Smyth (1920)",
+      "version": "1920-original-checked-2026-10-26",
+      "license": "Public-Domain (underlying original); application paraphrase MIT",
+      "locator": "Smyth, Inflection: voices, moods and verbal nouns, p. 107",
+      "reviewStatus": "upstream",
+      "deepLink": "/grammar?id=smyth-partOfSpeech",
+      "upstreamUrl": "https://archive.org/details/agreekgrammarfo02smytgoog/page/107/mode/2up"
+    }
+  }
+]

@@ -9,17 +9,16 @@
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
     "dev": "wrangler dev --env local --ip 127.0.0.1",
-    "prepare:corpus": "node scripts/prepare-corpus.mjs",
-    "prebuild": "npm run prepare:corpus",
-    "predev": "npm run prepare:corpus",
-    "pretypecheck": "npm run prepare:corpus",
-    "pretest": "npm run prepare:corpus"
+    "prepare:corpus": "node scripts/index-corpus.mjs",
+    "prebuild": "npm run build --workspace @exegetical/web",
+    "test:full": "vitest run --config vitest.full.config.ts"
   },
   "dependencies": {
+    "@cloudflare/workers-oauth-provider": "1.2.4",
+    "@exegetical/corpus": "*",
     "@exegetical/shared": "*",
-    "effect": "3.22.4",
     "@modelcontextprotocol/sdk": "1.32.2",
-    "zod": "4.6.7",
-    "@exegetical/corpus": "*"
+    "effect": "3.22.4",
+    "zod": "4.6.7"
   }
 }

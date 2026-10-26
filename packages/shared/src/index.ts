@@ -31,7 +31,7 @@ export interface Coverage { source: string; status: 'loaded' | 'partial' | 'not-
 export interface Envelope<T> { data: T; coverage: Coverage[]; provenance: Provenance[] }
 export interface Morphology { code?: string; description?: string; gender?: string }
 export interface Token { id: string; text: string; lemma?: string; gloss?: string; morphology?: Morphology; sourceId?: string }
-export interface Passage { ref: string; editions: { id: string; label: string; language: string; text: string; tokens: Token[] }[] }
+export interface Passage { ref: string; editions: { id: string; label: string; language: string; text: string; textStatus?: 'empty-upstream'; tokens: Token[] }[] }
 export interface TokenDetail extends Token { analyses: unknown[]; grammar: unknown[]; cautions: string[] }
 export interface Citation { id: string; sourceId: string; title: string; author?: string; date?: string; locator: string; excerpt: string; reviewStatus: string; deepLink: string }
-export const apiPaths = { passage: '/api/passage', token: '/api/token', syntax: '/api/syntax', lexicon: '/api/lexicon', concordance: '/api/concordance', citations: '/api/citations', sources: '/api/sources/search', sourcePage: '/api/source-page', coverage: '/api/coverage', provenance: '/api/provenance', notes: '/api/notes' } as const;
+export const apiPaths = { passage: '/api/passage', token: '/api/token', syntax: '/api/syntax', lexicon: '/api/lexicon', concordance: '/api/concordance', citations: '/api/citations', sources: '/api/sources/search', sourcePage: '/api/source-page', coverage: '/api/coverage', provenance: '/api/provenance', notes: '/api/notes', grammar: '/api/grammar', crossreferences: '/api/crossreferences', distribution: '/api/distribution', session: '/auth/session', login: '/auth/login', logout: '/auth/logout' } as const;

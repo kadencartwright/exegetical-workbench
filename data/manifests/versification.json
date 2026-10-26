@@ -1,0 +1,57 @@
+{
+  "url": "https://raw.githubusercontent.com/STEPBible/STEPBible-Data/be4191f0082aeedddb0eff0c02c966292b2bd641/Versification/TVTMS%20-%20Translators%20Versification%20Traditions%20with%20Methodology%20for%20Standardisation%20for%20Eng%2BHeb%2BLat%2BGrk%2BOthers%20-%20STEPBible.org%20CC%20BY.txt",
+  "revision": "be4191f0082aeedddb0eff0c02c966292b2bd641",
+  "sha256": "63058e0f20201af4bdaa7d830da5be8f493455d947c5f147d84840b33db9ddf8",
+  "path": "data/downloads/tvtms/TVTMS - Translators Versification Traditions with Methodology for Standardisation for Eng+Heb+Lat+Grk+Others - STEPBible.org CC BY.txt",
+  "license": "CC-BY-4.0",
+  "attribution": "STEPBible.org, based on work at Tyndale House Cambridge",
+  "samplePath": "data/samples/tvtms-nt.txt",
+  "sampleSha256": "496a6481e6010303aa972cf85b9b5bfef7efa7d3fe2f9b8d5c7774894db94856",
+  "scope": "Selected NT split/merged verse groups, checked against the pinned SBLGNT and BSB texts. No inferred word-level alignment. BSB follows different boundaries from KJV at Rev 12:17 and Phil 1:16-17; those are verified from BSB itself.",
+  "groups": [
+    {
+      "sblgnt": [
+        "Acts.19.40"
+      ],
+      "bsb": [
+        "Acts.19.40",
+        "Acts.19.41"
+      ]
+    },
+    {
+      "sblgnt": [
+        "2Cor.13.12"
+      ],
+      "bsb": [
+        "2Cor.13.12",
+        "2Cor.13.13"
+      ]
+    },
+    {
+      "sblgnt": [
+        "2Cor.13.13"
+      ],
+      "bsb": [
+        "2Cor.13.14"
+      ]
+    },
+    {
+      "sblgnt": [
+        "3John.1.14",
+        "3John.1.15"
+      ],
+      "bsb": [
+        "3John.1.14"
+      ]
+    },
+    {
+      "sblgnt": [
+        "Rev.12.17",
+        "Rev.12.18"
+      ],
+      "bsb": [
+        "Rev.12.17"
+      ]
+    }
+  ]
+}

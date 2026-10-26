@@ -1,7 +1,7 @@
 import { Context, Effect } from 'effect';
 import type { Envelope } from '@exegetical/shared';
 import { ServiceError } from './errors';
-export type CorpusOperation = 'passage' | 'token' | 'syntax' | 'lexicon' | 'concordance' | 'semantic_domain' | 'citations' | 'sources' | 'source-page' | 'coverage' | 'provenance';
+export type CorpusOperation = 'passage' | 'token' | 'syntax' | 'lexicon' | 'concordance' | 'semantic_domain' | 'citations' | 'sources' | 'source' | 'source-page' | 'coverage' | 'provenance' | 'grammar' | 'crossreferences' | 'distribution';
 export interface CorpusAdapter { query(operation: CorpusOperation, params: Record<string, string>): Envelope<unknown> | Promise<Envelope<unknown>> }
 export class Corpus extends Context.Tag('Corpus')<Corpus, CorpusAdapter>() {}
 export const queryCorpus = (operation: CorpusOperation, params: Record<string, string>) => Effect.gen(function* () {

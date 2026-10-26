@@ -13,11 +13,11 @@ const ready = (key: string, data: unknown, model = initialModel) => {
 const note = { id: 'note-1', body: 'Argument', tags: ['syntax'], provenanceTag: 'my-inference', anchor: { type: 'token', id: 'token-a' }, createdAt: 'now', updatedAt: 'now' }
 
 describe('reference navigation and selection', () => {
-  it('normalizes common references and refuses to narrow ranges', () => {
+  it('normalizes verses, chapters and ranges without narrowing them', () => {
     expect(normalizeReference('Matthew 28:19')).toBe('Matt.28.19')
     expect(normalizeReference('Jn 3:16')).toBe('John.3.16')
-    expect(normalizeReference('Rom 8:28ff')).toBeUndefined()
-    expect(normalizeReference('Gen 1-3')).toBeUndefined()
+    expect(normalizeReference('Rom 8:28ff')).toBe('Rom.8.28ff')
+    expect(normalizeReference('Gen 1-3')).toBe('Gen.1-3')
     expect(normalizeReference('Matt.0.19')).toBeUndefined()
   })
   it('opens source-page and passage deep links using actual API requests', () => {
@@ -29,7 +29,7 @@ describe('reference navigation and selection', () => {
   it('starts on Matthew with real server requests and a schema-valid model', () => {
     const result = init()
     expect(result.model.ref).toBe('Matt.28.19')
-    expect(result.commands).toHaveLength(5)
+    expect(result.commands?.map(c => c.args?.key)).toEqual(['passage','syntax','citations','crossreferences','notes','coverage','session'])
     expect(Schema.decodeUnknownSync(Model)(result.model)).toEqual(result.model)
   })
   it('selects the actual supplied αὐτούς token, without assuming a corpus ID', () => {
@@ -130,4 +130,120 @@ describe('HTTP and provenance boundaries', () => {
     const message = await Effect.runPromise(result.commands![0].effect)
     expect(message).toMatchObject({ _tag: 'Loaded', key: 'coverage', error: 'Disconnected' })
   })
+})
+
+describe('M1 complete workflow transitions (synthetic protocol cases)', () => {
+  afterEach(() => vi.unstubAllGlobals())
+  it('loads token notes in the same selection as word evidence', () => {
+    const result = update(initialModel, Message.SelectToken({id:'sblgnt:Matt.28.19:8'}))
+    expect(result.commands?.map(c=>c.args?.path).filter(Boolean)).toContain('/api/notes?anchor=sblgnt%3AMatt.28.19%3A8')
+  })
+  it('restores explicit token, view and filters before startup response arrives', () => {
+    const result = initFromUrl('https://desk.test/study/John.3.16?token=real-token&tab=lexicon&book=John&form=test&edition=sblgnt')
+    const passage = {ref:'John.3.16',editions:[{tokens:[{id:'autous',text:'αὐτούς'}]}]}
+    const loaded = update(result.model,Message.Loaded({key:'passage',requestId:result.model.serial,payload:envelope(passage),error:''}))
+    expect(loaded.model.selectedToken).toBe('real-token')
+    expect(loaded.model.tab).toBe('lexicon')
+    expect(loaded.model.filterBook).toBe('John')
+  })
+  it('restores browser history with increasing request IDs while preserving a draft', () => {
+    const started = initFromUrl('https://desk.test/study/Matt.28.19').model
+    const draft = changed('body','Keep this argument',started)
+    const result = update(draft,Message.RouteChanged({href:'https://desk.test/study/John.3.16?tab=syntax'}))
+    expect(result.model.ref).toBe('John.3.16')
+    expect(result.model.tab).toBe('syntax')
+    expect(result.model.body).toBe('Keep this argument')
+    expect(result.model.noteAnchorId).toBe('Matt.28.19')
+    expect(result.model.serial).toBeGreaterThan(started.serial)
+    expect(update(result.model,Message.Loaded({key:'passage',requestId:started.serial,payload:envelope({editions:[]}),error:''})).model).toBe(result.model)
+  })
+  it('keeps an in-flight save tracked across browser history changes', () => {
+    const saving = update(changed('body','Earlier draft'),Message.Save()).model
+    const result = update(saving,Message.RouteChanged({href:'https://desk.test/study/John.3.16'})).model
+    expect(result.resources.save).toEqual(saving.resources.save)
+    const saved = update(result,Message.Loaded({key:'save',requestId:saving.serial,payload:envelope(note),error:''})).model
+    expect(saved.editingId).toBe(note.id)
+    expect(saved.dirty).toBe(false)
+  })
+  it('intersects concordance filters and requests distribution before pagination', () => {
+    const selected = ready('token',{id:'a',text:'a',lemma:'αὐτός'}).model
+    const filtered = {...selected,filterBook:'John',filterForm:'αὐτούς',filterEdition:'sblgnt'}
+    const result = update(filtered,Message.ConcordancePage({offset:100}))
+    const paths = result.commands!.map(c=>String(c.args?.path))
+    expect(paths.find(p=>p.startsWith('/api/concordance'))).toMatch(/book=John.*edition=sblgnt&limit=100&offset=100/)
+    const distribution = paths.find(p=>p.startsWith('/api/distribution'))!
+    expect(distribution).toContain('book=John')
+    expect(distribution).not.toMatch(/offset|limit/)
+  })
+  it('requires an explicit confirmation to discard a draft', () => {
+    const draft = changed('body','Do not lose this')
+    const pending = update(draft,Message.Discard()).model
+    expect(pending.body).toBe(draft.body)
+    expect(pending.discardPending).toBe(true)
+    expect(update(pending,Message.CancelDiscard()).model.body).toBe(draft.body)
+    const discarded = update(pending,Message.ConfirmDiscard()).model
+    expect(discarded.body).toBe('')
+    expect(discarded.dirty).toBe(false)
+  })
+  it('protects drafts from anchor changes and logout', () => {
+    const draft = changed('body','Argument')
+    expect(update(draft,Message.AnchorSelected({type:'source-page',id:'page-real'})).model.noteAnchorId).toBe('Matt.28.19')
+    expect(update(draft,Message.Logout()).commands).toBeUndefined()
+  })
+  it('anchors a user-selected phrase using its real stable token endpoints', () => {
+    const start = update(initialModel,Message.PhraseStart({id:'sblgnt:John.3.16:1'})).model
+    const end = update(start,Message.PhraseEnd({id:'sblgnt:John.3.16:3'})).model
+    expect(end.noteAnchorType).toBe('phrase')
+    expect(end.noteAnchorId).toBe('token-range:sblgnt:John.3.16:1..sblgnt:John.3.16:3')
+  })
+  it('copies exact page provenance into a page-anchored note without inserting a quotation', () => {
+    const sourceLocator = {source:'Synthetic source',edition:'Test edition',version:'test-revision',license:'Test license',reviewStatus:'AI-assisted, unreviewed',locator:'page-real'}
+    const page = ready('page',{id:'page-real',provenance:sourceLocator}).model
+    const anchor = update(page,Message.AnchorSelected({type:'source-page',id:'page-real'})).model
+    expect(anchor.body).toBe('')
+    expect(anchor.sourceVersion).toBe('test-revision')
+    expect(anchor.sourceReview).toBe('AI-assisted, unreviewed')
+    expect(anchor.noteAnchorId).toBe('page-real')
+  })
+  it('updates the browser URL and installs unload protection through real Foldkit commands', async () => {
+    const pushState = vi.fn()
+    const browser = {onbeforeunload:null,location:{pathname:'/',search:'',assign:vi.fn()},history:{pushState}}
+    vi.stubGlobal('window',browser)
+    const navigate = update({...initialModel,referenceInput:'2 Timothy 3:16'},Message.Navigate())
+    await Effect.runPromise(navigate.commands!.at(-1)!.effect)
+    expect(pushState).toHaveBeenCalledWith(null,'','/study/2Tim.3.16')
+    const draft = update(initialModel,Message.EditorChanged({field:'body',value:'Argument'}))
+    await Effect.runPromise(draft.commands!.at(-1)!.effect)
+    expect(browser.onbeforeunload).toBeTypeOf('function')
+  })
+  it('refuses invalid or reversed references and normalizes every NT book name', () => {
+    expect(normalizeReference('2 Timothy 3:16-17')).toBe('2Tim.3.16-17')
+    expect(normalizeReference('1 Corinthians 13')).toBe('1Cor.13')
+    expect(normalizeReference('Matthew 28:19-18')).toBeUndefined()
+    expect(normalizeReference('Madeup 2:3')).toBeUndefined()
+    expect(safeLink('/\\evil.example')).toBeUndefined()
+  })
+})
+
+it('reloads the current clean editor from the server but preserves newer unsaved edits',()=>{
+  const clean = update(initialModel,Message.EditNote({note})).model
+  const reload = update(clean,Message.ReloadNotes())
+  expect(reload.commands?.some(c=>c.args?.path==='/api/notes/note-1')).toBe(true)
+  const draft = changed('body','Local changes',clean)
+  expect(update(draft,Message.ReloadNotes()).commands?.some(c=>c.args?.path==='/api/notes/note-1')).toBe(false)
+})
+it('keeps a separate lemma lookup in its shareable URL and restores concordance pagination',()=>{
+  const start = initFromUrl('https://desk.test/study/Matt.28.19?token=real-id&tab=lexicon&lemma=G846&offset=100')
+  const passage = update(start.model,Message.Loaded({key:'passage',requestId:start.model.serial,payload:envelope({editions:[{tokens:[]}]}),error:''})).model
+  expect(passage.lookupLemma).toBe('G846')
+  expect(passage.concordanceOffset).toBe(100)
+  const token = update(passage,Message.Loaded({key:'token',requestId:passage.serial,payload:envelope({id:'real-id',lemma:'source lemma'}),error:''}))
+  expect(token.commands?.some(c=>String(c.args?.path).includes('offset=100'))).toBe(true)
+})
+it('opens a linked note on its own token rather than the default autous selection',()=>{
+  const note = {id:'another-token-note',body:'Synthetic protocol note',tags:[],provenanceTag:'my-inference',anchor:{type:'token',id:'sblgnt:Matt.28.19:6'},createdAt:'now',updatedAt:'now'}
+  const result = ready('openNote',note,{...initialModel,selectedToken:'sblgnt:Matt.28.19:8'})
+  expect(result.model.selectedToken).toBe(note.anchor.id)
+  expect(result.model.noteAnchorId).toBe(note.anchor.id)
+  expect(result.commands?.[0].args?.path).toBe('/api/token?id=sblgnt%3AMatt.28.19%3A6')
 })

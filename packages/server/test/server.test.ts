@@ -40,10 +40,10 @@ describe('authentication boundary', () => {
       expect(await response.text()).toContain('authentication-not-configured');
     }
   });
-  it('requires both explicit local flags and loopback host', () => {
-    expect(() => authenticate(new Request('https://example.com/api/notes'), env)).toThrow();
-    expect(() => authenticate(request('/api/notes'), { APP_ENV: 'development' })).toThrow();
-    expect(authenticate(request('/api/notes'), env)).toBe('local-development-user');
+  it('requires both explicit local flags and loopback host', async () => {
+    await expect(authenticate(new Request('https://example.com/api/notes'), env)).rejects.toThrow();
+    await expect(authenticate(request('/api/notes'), { APP_ENV: 'development' })).rejects.toThrow();
+    expect(await authenticate(request('/api/notes'), env)).toBe('local-development-user');
   });
   it('rejects cross-origin private requests before reading or writing notes', async () => {
     const response = await createApp().fetch(request('/api/notes', { headers: { Origin: 'https://attacker.example' } }), env);

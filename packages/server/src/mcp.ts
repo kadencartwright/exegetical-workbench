@@ -13,11 +13,14 @@ export function createMcpServer(services: Services, owner: string) {
     });
   };
   const corpusTool = (name: string, operation: CorpusOperation, schema: Record<string, z.ZodType>) => register(name, 'Read corpus evidence, preserving coverage and provenance. Missing data is not evidence of silence.', schema, args => services.corpus(operation, args));
-  corpusTool('get_passage', 'passage', { ref: text(), editions: text().optional() });
+  corpusTool('get_passage', 'passage', { ref: text(), editions: text().optional(), refEdition: z.enum(['sblgnt','bsb']).optional() });
   corpusTool('get_token', 'token', { id: text() });
   corpusTool('get_syntax', 'syntax', { ref: text() });
   corpusTool('lexicon_lookup', 'lexicon', { lemma: text(), sources: text().optional() });
-  corpusTool('concordance', 'concordance', { lemma: text(), book: text().optional(), edition: text().optional(), form: text().optional() });
+  corpusTool('concordance', 'concordance', { lemma: text(), book: text().optional(), edition: text().optional(), form: text().optional(), offset: z.coerce.string().optional(), limit: z.coerce.string().optional() });
+  corpusTool('crossreferences', 'crossreferences', { ref: text() });
+  corpusTool('distribution', 'distribution', { lemma: text(), book: text().optional(), edition: text().optional(), form: text().optional() });
+  corpusTool('grammar', 'grammar', { category: text().optional(), id: text().optional() });
   corpusTool('semantic_domain', 'semantic_domain', { id: text() });
   corpusTool('citations_of', 'citations', { ref: text() });
   corpusTool('search_sources', 'sources', { query: text(), author: text().optional(), dates: text().optional() });

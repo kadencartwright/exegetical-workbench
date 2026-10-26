@@ -18,7 +18,8 @@ test('verified real samples retain text, morphology, syntax; exclude UBS attribu
  assert.ok(corpus.syntax[0]!.trees.length);assert.doesNotMatch(JSON.stringify(corpus),/"(?:ln|domain|english|mandarin)":/);
  assert.ok(corpus.citations.some(c=>c.reference.ref==='Matt.28.19'&&c.locator.includes('p:214')));
  assert.ok(corpus.citations.every(c=>c.reviewStatus==='AI-assisted, unreviewed'));
- assert.ok(corpus.coverage.every(c=>c.status==='partial'));
+ assert.ok(corpus.coverage.filter(c=>['sblgnt','bsb','macula'].includes(c.sourceId)).every(c=>c.status==='partial'));
+ assert.equal(corpus.importMode,'sample');
 });
 test('normalizes actual CO, PDF p./page, printed and marginal formats',()=>{
  assert.equal(normalizeLocator('work','[CO X/1, p. 189]')!.printedPage,'189');
@@ -61,11 +62,11 @@ test('reception verifies every manifest member, even excluded originals',async()
  await writeFile(join(dir,'completed/work/latin.txt'),'damaged');await assert.rejects(Effect.runPromise(importReception(dir,pin)),/Checksum mismatch/);
  await assert.rejects(Effect.runPromise(importReception(dir,{...pin,revision:'wrong'})),/revision mismatch/);
 });
-test('service adapter returns real range citations and explicit absent lexicon coverage',async()=>{
+test('service adapter returns real citations, independently sourced lexicons and explicit unloaded coverage',async()=>{
  const {createCorpusAdapter}=await import('../src/index.ts');const corpus=await Effect.runPromise(buildCorpus(root));const adapter=createCorpusAdapter(corpus);
  assert.ok((adapter.query('citations',{ref:'Matthew 28:19'}).data as unknown[]).length>0);
- const lexicon=adapter.query('lexicon',{lemma:'ἔθνος'});assert.deepEqual(lexicon.data,[]);assert.ok(lexicon.coverage.some(c=>c.status==='not-loaded'));
- assert.equal(adapter.query('passage',{ref:'John.3.16'}).data,null);
+ const lexicon=adapter.query('lexicon',{lemma:'ἔθνος'});assert.equal((lexicon.data as unknown[]).length,2);assert.ok(adapter.query('semantic_domain',{id:'1'}).coverage.some(c=>c.status==='not-loaded'));
+ assert.deepEqual(adapter.query('passage',{ref:'John.3.16'}).data,{ref:'John.3.16',editions:[]});
  assert.ok(corpus.scriptureIndex?.['Matt.28.19']?.length);
 });
 test('pipe witness markers and unpaginated digital signatures retain exact locators',()=>{
