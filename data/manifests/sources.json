@@ -1,0 +1,103 @@
+[
+  {
+    "id": "sblgnt",
+    "revision": "d7f35adca9ec410e1d1499c63b4dd989d76c8d4d",
+    "upstreamUrl": "https://github.com/LogosBible/SBLGNT",
+    "license": "CC-BY-4.0",
+    "licenseFile": "data/licenses/sblgnt.txt",
+    "attribution": "The Greek New Testament: SBL Edition, Michael W. Holmes, © 2010 Society of Biblical Literature and Logos Bible Software.",
+    "included": [
+      "verse text"
+    ],
+    "excluded": [
+      "apparatus"
+    ],
+    "coverage": {
+      "sourceId": "sblgnt",
+      "status": "partial",
+      "scope": "Matt.28.19 only",
+      "limitations": [
+        "Verified focused sample; the rest of the Bible is not bundled."
+      ]
+    },
+    "files": [
+      {
+        "path": "data/sblgnt/text/Matt.txt",
+        "url": "https://raw.githubusercontent.com/LogosBible/SBLGNT/d7f35adca9ec410e1d1499c63b4dd989d76c8d4d/data/sblgnt/text/Matt.txt",
+        "sha256": "4fa718540cbc6330591b233c99c68bbf52b85afc90016e4188efe5cd9719eeb0",
+        "samplePath": "data/samples/sblgnt-Matt.28.19.txt",
+        "sampleSha256": "61f9ed43c1507cf039f28d3e9d077f04f14203f70f0a75e0eaeb498ad69f4d8e"
+      }
+    ]
+  },
+  {
+    "id": "macula",
+    "revision": "8423afe47b9e8f24b7772e808af45c7159a6fe7e",
+    "upstreamUrl": "https://github.com/Clear-Bible/macula-greek",
+    "license": "CC-BY-4.0",
+    "licenseFile": "data/licenses/macula.txt",
+    "attribution": "MACULA Greek Linguistic Datasets, https://github.com/Clear-Bible/macula-greek/, © 2022–2024 Biblica, Inc. Greek text: SBLGNT. Berean interlinear gloss: public domain.",
+    "included": [
+      "SBLGNT word morphology",
+      "syntax groups",
+      "referents",
+      "Berean gloss"
+    ],
+    "excluded": [
+      "ln",
+      "domain",
+      "english",
+      "mandarin",
+      "all unlisted attributes"
+    ],
+    "coverage": {
+      "sourceId": "macula",
+      "status": "partial",
+      "scope": "Matt.28.19 only",
+      "limitations": [
+        "Verified focused sample; the rest of the Bible is not bundled."
+      ]
+    },
+    "files": [
+      {
+        "path": "SBLGNT/lowfat/01-matthew.xml",
+        "url": "https://raw.githubusercontent.com/Clear-Bible/macula-greek/8423afe47b9e8f24b7772e808af45c7159a6fe7e/SBLGNT/lowfat/01-matthew.xml",
+        "sha256": "83082bb2a094f06a4f9fd03e1f5a4b2af3977622a5c705ab65ab15ba74986de5",
+        "samplePath": "data/samples/macula-Matt.28.19.xml",
+        "sampleSha256": "7a622ac6ad32808377ec045975ce880a365e015c40fc2bc3420f579a8057ac18"
+      }
+    ]
+  },
+  {
+    "id": "bsb",
+    "revision": "retrieved-2026-10-26-sha256",
+    "upstreamUrl": "https://bereanbible.com",
+    "license": "Public-Domain",
+    "licenseFile": "data/licenses/bsb.txt",
+    "attribution": "The Holy Bible, Berean Standard Bible. Bible Hub / Berean Bible Translation Committee.",
+    "included": [
+      "verse text"
+    ],
+    "excluded": [
+      "translation tables (not audited)",
+      "headings"
+    ],
+    "coverage": {
+      "sourceId": "bsb",
+      "status": "partial",
+      "scope": "Matt.28.19 only",
+      "limitations": [
+        "Verified focused sample; the rest of the Bible is not bundled."
+      ]
+    },
+    "files": [
+      {
+        "path": "bsb.txt",
+        "url": "https://bereanbible.com/bsb.txt",
+        "sha256": "2ac3af1de52d4e68261cba91d85c320b7eadc6560e830d99e591767b8ff5ca96",
+        "samplePath": "data/samples/bsb-Matt.28.19.txt",
+        "sampleSha256": "2d525d0a52ea38c33bedaba110db325612ef2beeb8d0ba799d88c7c5f8e45dbd"
+      }
+    ]
+  }
+]

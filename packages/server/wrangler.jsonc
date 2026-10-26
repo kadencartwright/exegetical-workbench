@@ -1,0 +1,18 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "exegetical-workbench",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "vars": { "APP_ENV": "production", "AUTH_MODE": "disabled" },
+  "d1_databases": [{ "binding": "DB", "database_name": "exegetical-notes", "database_id": "00000000-0000-0000-0000-000000000001", "migrations_dir": "../../migrations" }],
+  "r2_buckets": [{ "binding": "CORPUS_BUCKET", "bucket_name": "exegetical-corpus" }],
+  "env": {
+    "local": {
+      "vars": { "APP_ENV": "development", "AUTH_MODE": "local-development", "APP_ORIGIN": "http://localhost:5173" },
+      "d1_databases": [{ "binding": "DB", "database_name": "exegetical-notes", "database_id": "00000000-0000-0000-0000-000000000001", "migrations_dir": "../../migrations" }],
+      "r2_buckets": [{ "binding": "CORPUS_BUCKET", "bucket_name": "exegetical-corpus" }]
+    }
+  }
+}

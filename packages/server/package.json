@@ -1,0 +1,25 @@
+{
+  "name": "@exegetical/server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "build": "wrangler deploy --dry-run --env=\"\" --outdir dist",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "dev": "wrangler dev --env local --ip 127.0.0.1",
+    "prepare:corpus": "node scripts/prepare-corpus.mjs",
+    "prebuild": "npm run prepare:corpus",
+    "predev": "npm run prepare:corpus",
+    "pretypecheck": "npm run prepare:corpus",
+    "pretest": "npm run prepare:corpus"
+  },
+  "dependencies": {
+    "@exegetical/shared": "*",
+    "effect": "3.22.4",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "4.6.7",
+    "@exegetical/corpus": "*"
+  }
+}

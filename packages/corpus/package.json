@@ -1,0 +1,6 @@
+{
+  "name":"@exegetical/corpus","version":"0.1.0","private":true,"type":"module",
+  "exports":{".":"./src/index.ts","./node":"./src/import.ts"},
+  "scripts":{"test":"node --experimental-strip-types --test test/*.test.ts","typecheck":"tsc --noEmit --strict --target ES2022 --module NodeNext --moduleResolution NodeNext --allowImportingTsExtensions --skipLibCheck src/*.ts","import":"node --experimental-strip-types src/cli.ts","build":"node --experimental-strip-types src/cli.ts build"},
+  "dependencies":{"effect":"^3.19.0","fast-xml-parser":"^5.3.0"}
+}

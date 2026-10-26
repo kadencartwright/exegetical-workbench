@@ -1,0 +1,2 @@
+# Preserve audited upstream sample bytes, including significant checksum whitespace.
+data/samples/** -text -whitespace

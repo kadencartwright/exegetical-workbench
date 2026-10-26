@@ -1,0 +1,42 @@
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
+import { z } from 'zod';
+import type { Services } from './services';
+import type { CorpusOperation } from './corpus';
+const text = (max = 512) => z.string().trim().min(1).max(max);
+export function createMcpServer(services: Services, owner: string) {
+  const server = new McpServer({ name: 'exegetical-workbench', version: '0.0.0' });
+  const register = (name: string, description: string, inputSchema: Record<string, z.ZodType>, execute: (args: Record<string, string>) => Promise<unknown>) => {
+    server.registerTool(name, { description, inputSchema, annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } }, async args => {
+      try { const result = await execute(args as Record<string, string>); return { content: [{ type: 'text' as const, text: JSON.stringify(result) }] }; }
+      catch { return { isError: true, content: [{ type: 'text' as const, text: 'The requested resource is unavailable or does not exist.' }] }; }
+    });
+  };
+  const corpusTool = (name: string, operation: CorpusOperation, schema: Record<string, z.ZodType>) => register(name, 'Read corpus evidence, preserving coverage and provenance. Missing data is not evidence of silence.', schema, args => services.corpus(operation, args));
+  corpusTool('get_passage', 'passage', { ref: text(), editions: text().optional() });
+  corpusTool('get_token', 'token', { id: text() });
+  corpusTool('get_syntax', 'syntax', { ref: text() });
+  corpusTool('lexicon_lookup', 'lexicon', { lemma: text(), sources: text().optional() });
+  corpusTool('concordance', 'concordance', { lemma: text(), book: text().optional(), edition: text().optional(), form: text().optional() });
+  corpusTool('semantic_domain', 'semantic_domain', { id: text() });
+  corpusTool('citations_of', 'citations', { ref: text() });
+  corpusTool('search_sources', 'sources', { query: text(), author: text().optional(), dates: text().optional() });
+  corpusTool('get_source_page', 'source-page', { locator: text(1024) });
+  corpusTool('coverage', 'coverage', { source: text().optional() });
+  corpusTool('provenance', 'provenance', { resource: text() });
+  register('search_notes', 'Search only the authenticated user’s private notes.', { q: text().optional(), anchor: text().optional() }, args => services.notes(owner, args.anchor, args.q));
+  register('get_note', 'Read only the authenticated user’s private note.', { id: text() }, args => services.note(owner, args.id));
+  return server;
+}
+export async function handleMcp(request: Request, services: Services, owner: string): Promise<Response> {
+  const server = createMcpServer(services, owner);
+  const transport = new WebStandardStreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true });
+  await server.connect(transport);
+  try {
+    const response = await transport.handleRequest(request);
+    response.headers.set('Cache-Control', 'no-store');
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    return response;
+  }
+  finally { await server.close(); }
+}

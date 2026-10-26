@@ -9,3 +9,4 @@ dist/
 data/downloads/
 data/generated/
 coverage/
+packages/server/.generated/

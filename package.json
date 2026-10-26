@@ -1,0 +1,36 @@
+{
+  "name": "exegetical-workbench",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present && tsc -p tsconfig.infra.json",
+    "test": "npm run test --workspaces --if-present",
+    "dev": "npm run dev --workspace @exegetical/server",
+    "db:migrate:local": "wrangler d1 migrations apply exegetical-notes --local --config packages/server/wrangler.jsonc --env local",
+    "dev:web": "npm run dev --workspace @exegetical/web"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261026.1",
+    "alchemy": "0.94.0",
+    "typescript": "~5.9.3",
+    "vitest": "5.0.5",
+    "wrangler": "4.153.0",
+    "@types/node": "^22.19.0"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "overrides": {
+    "vitest": "$vitest",
+    "alchemy": {
+      "miniflare": {
+        "sharp": "0.35.5",
+        "undici": "7.30.1"
+      }
+    }
+  }
+}
