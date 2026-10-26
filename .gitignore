@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.wrangler/
+.alchemy/
+.env
+.env.*
+!.env.example
+.dev.vars
+data/downloads/
+data/generated/
+coverage/
